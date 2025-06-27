@@ -29,7 +29,7 @@
         <button
           class="bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
         >
-          Explore Now
+          <a href="/test"> Comenzar </a>
         </button>
       </div>
     </section>

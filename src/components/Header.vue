@@ -16,7 +16,14 @@
         </li>
         <li>
           <a
-            href="#"
+            href="/form"
+            class="text-sm font-medium hover:text-purple-500 transition-colors duration-300"
+            >Formulario</a
+          >
+        </li>
+        <li>
+          <a
+            href="/"
             class="text-sm font-medium hover:text-purple-500 transition-colors duration-300"
             >Predicciones</a
           >
