@@ -7,7 +7,7 @@
     <section class="relative h-screen flex items-center justify-center overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-gray-950"></div>
       <img
-        src="@/assets/imgs/banner.webp"
+        src="@/assets/imgs/banner.jpg"
         alt="Tech background"
         class="absolute inset-0 w-full h-full object-cover opacity-20 scale-110"
       />
@@ -29,7 +29,7 @@
         <button
           class="bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
         >
-          <a href="/test"> Comenzar </a>
+          <a href="/form"> Comenzar </a>
         </button>
       </div>
     </section>
@@ -78,8 +78,8 @@ import { ref } from 'vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import '@/assets/main.css'
-import tree1 from '@/assets/imgs/tree1.webp'
-import less_sleep_more_social_media from '@/assets/imgs/Less_sleep_more_social_media.webp'
+import tree1 from '@/assets/imgs/tree1.jpg'
+import less_sleep_more_social_media from '@/assets/imgs/Less_sleep_more_social_media.jpg'
 
 const products = ref([
   {

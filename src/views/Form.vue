@@ -59,7 +59,7 @@
               :min="questions[currentQuestionIndex].min"
               :max="questions[currentQuestionIndex].max"
               step="1"
-              class="w-full h-2 rounded-full appearance-none cursor-pointer focus:outline-none"
+              class="w-full h-2 rounded-full appearance-none bg-gray-800/50 cursor-pointer focus:outline-none"
             />
             <h2 class="text-3xl font-semibold text-purple-500 mt-2 text-center">
               {{ answers[currentQuestionIndex] }}
