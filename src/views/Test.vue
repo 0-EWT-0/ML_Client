@@ -89,7 +89,7 @@ onMounted(async () => {
   <div class="container">
     <h1>Prueba de Perfiles</h1>
 
-    <!-- Formulario para crear un perfil -->
+    <!-- Formulario para crear un perfilllll -->
     <h2>Crear Perfil</h2>
     <form @submit.prevent="createProfile">
       <div>
