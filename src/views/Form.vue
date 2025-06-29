@@ -59,7 +59,7 @@
               :min="questions[currentQuestionIndex].min"
               :max="questions[currentQuestionIndex].max"
               step="1"
-              class="w-full h-2 rounded-full appearance-none bg-gray-800/50 cursor-pointer focus:outline-none"
+              class="w-full h-2 rounded-full appearance-none cursor-pointer focus:outline-none"
             />
             <h2 class="text-3xl font-semibold text-purple-500 mt-2 text-center">
               {{ answers[currentQuestionIndex] }}
@@ -125,43 +125,45 @@
               </div>
             </label>
           </div>
-          <div v-else-if="questions[currentQuestionIndex].type === 'country'" class="mb-6 relative">
-            <input
-              v-model="searchQuery"
-              type="text"
-              class="w-full bg-gray-800/50 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500 transition-colors"
-              placeholder="Busca tu país..."
-              @input="filterCountries"
-              @focus="showDropdown = true"
-              @blur="delayHideDropdown"
-            />
-            <div
-              v-if="showDropdown && filteredCountries.length"
-              class="absolute z-10 w-full bg-gray-800/90 border border-gray-700 rounded-lg mt-1 max-h-64 overflow-y-auto"
-            >
-              <div
-                v-for="country in filteredCountries"
-                :key="country.cca3"
-                @click="selectCountry(country.name.common)"
-                class="flex items-center p-3 hover:bg-purple-500/20 cursor-pointer transition-colors"
-              >
-                <img
-                  :src="country.flags.png"
-                  :alt="`${country.name.common} flag`"
-                  class="w-6 h-4 mr-2 object-cover"
-                />
-                <span class="text-gray-300">{{ country.name.common }}</span>
-              </div>
-            </div>
-          </div>
+<div v-else-if="questions[currentQuestionIndex].type === 'country' || questions[currentQuestionIndex].type === 'text'" class="mb-6 relative">
+  <input
+    v-model="searchQuery"
+    type="text"
+    class="w-full bg-gray-800/50 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500 transition-colors"
+    :placeholder="questions[currentQuestionIndex].type === 'country' ? 'Busca tu país...' : 'Ingresa tu nombre de usuario...'"
+    @input="questions[currentQuestionIndex].type === 'country' ? filterCountries() : answers[currentQuestionIndex] = searchQuery"
+    @focus="questions[currentQuestionIndex].type === 'country' ? showDropdown = true : null"
+    @blur="questions[currentQuestionIndex].type === 'country' ? delayHideDropdown() : null"
+  />
+  <div
+    v-if="showDropdown && filteredCountries.length && questions[currentQuestionIndex].type === 'country'"
+    class="absolute z-10 w-full bg-gray-800/90 border border-gray-700 rounded-lg mt-1 max-h-64 overflow-y-auto"
+  >
+    <div
+      v-for="country in filteredCountries"
+      :key="country.cca3"
+      @click="selectCountry(country.name.common)"
+      class="flex items-center p-3 hover:bg-purple-500/20 cursor-pointer transition-colors"
+    >
+      <img
+        :src="country.flags.png"
+        :alt="`${country.name.common} flag`"
+        class="w-6 h-4 mr-2 object-cover"
+      />
+      <span class="text-gray-300">{{ country.name.common }}</span>
+    </div>
+  </div>
+</div>
         </div>
       </div>
     </section>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router';
+const router = useRouter();
 import instagram from '@/assets/imgs/social_media/Instagram.png'
 import tiktok from '@/assets/imgs/social_media/Tiktok.png'
 import facebook from '@/assets/imgs/social_media/Facebook.png'
@@ -194,7 +196,12 @@ import mood3 from '@/assets/imgs/icons/mood3.png'
 import dormir1 from '@/assets/imgs/icons/dormir1.png'
 import dormir2 from '@/assets/imgs/icons/dormir2.png'
 import dormir3 from '@/assets/imgs/icons/dormir3.png'
-import { useRouter } from 'vue-router'
+import { useProfileStore } from '@/stores/profileStore';
+import type { Profile } from '@/types';
+
+const profileStore = useProfileStore();
+const { PostStoreProfile } = profileStore;
+
 
 const questions = ref([
   {
@@ -202,23 +209,12 @@ const questions = ref([
     type: 'range',
     min: 1,
     max: 100,
-
     options: [
       { label: 'Bebé', image: baby, range: [1, 5] },
       { label: 'Niño', image: child, range: [6, 14] },
-      {
-        label: 'Adolescente',
-
-        image: teenager,
-        range: [15, 20],
-      },
+      { label: 'Adolescente', image: teenager, range: [15, 20] },
       { label: 'Adulto', image: adult, range: [21, 60] },
-      {
-        label: 'Adulto mayor',
-
-        image: grandfather,
-        range: [61, 100],
-      },
+      { label: 'Adulto mayor', image: grandfather, range: [61, 100] },
     ],
   },
   {
@@ -281,18 +277,8 @@ const questions = ref([
     max: 24,
     options: [
       { label: 'Sueño corto', image: dormir3, range: [1, 7] },
-      {
-        label: 'Sueño moderado',
-
-        image: dormir2,
-        range: [8, 16],
-      },
-      {
-        label: 'Sueño largo',
-
-        image: dormir1,
-        range: [17, 24],
-      },
+      { label: 'Sueño moderado', image: dormir2, range: [8, 16] },
+      { label: 'Sueño largo', image: dormir1, range: [17, 24] },
     ],
   },
   {
@@ -305,121 +291,176 @@ const questions = ref([
       { name: 'Complicado', image: complicated },
     ],
   },
-])
+  {
+    text: '¿Cuántos conflictos has tenido por redes sociales?',
+    type: 'range',
+    min: 0,
+    max: 10,
+    options: [
+      { label: 'Sin conflictos', image: mood1, range: [0, 0] },
+      { label: 'Pocos conflictos', image: mood1, range: [1, 3] },
+      { label: 'Varios conflictos', image: mood1, range: [4, 7] },
+      { label: 'Muchos conflictos', image: mood1, range: [8, 10] },
+    ],
+  },
+  {
+    text: '¿Cuál es tu nombre de usuario?',
+    type: 'text',
+  },
+]);
 
-const currentQuestionIndex = ref(0)
-const answers = ref({})
-const countries = ref([])
-const searchQuery = ref('')
-const showDropdown = ref(false)
+const currentQuestionIndex = ref(0);
+const answers = ref({});
+const countries = ref([]);
+const searchQuery = ref('');
+const showDropdown = ref(false);
+const error = ref('');
+const message = ref('');
 
 const filteredCountries = computed(() => {
-  if (!searchQuery.value) return countries.value
+  if (!searchQuery.value) return countries.value;
   return countries.value.filter((country) =>
     country.name.common.toLowerCase().includes(searchQuery.value.toLowerCase()),
-  )
-})
+  );
+});
 
 const currentRangeOption = computed(() => {
   if (questions.value[currentQuestionIndex.value].type === 'range') {
-    const value = answers.value[currentQuestionIndex.value] || 1
-    const options = questions.value[currentQuestionIndex.value].options
+    const value = answers.value[currentQuestionIndex.value] || 1;
+    const options = questions.value[currentQuestionIndex.value].options;
     return (
       options.find((option) => value >= option.range[0] && value <= option.range[1]) || options[0]
-    )
+    );
   }
-  return { label: '', description: '', image: '' }
-})
+  return { label: '', description: '', image: '' };
+});
 
 const isCurrentAnswerValid = computed(() => {
-  const answer = answers.value[currentQuestionIndex.value]
-  const question = questions.value[currentQuestionIndex.value]
+  const answer = answers.value[currentQuestionIndex.value];
+  const question = questions.value[currentQuestionIndex.value];
 
   if (question.type === 'range') {
-    return typeof answer === 'number'
+    return typeof answer === 'number';
   } else if (question.type === 'checkbox') {
     if (question.multiple) {
-      return Array.isArray(answer) && answer.length > 0
+      return Array.isArray(answer) && answer.length > 0;
     } else {
-      return typeof answer === 'string' && answer !== ''
+      return typeof answer === 'string' && answer !== '';
     }
-  } else if (question.type === 'country') {
-    return typeof answer === 'string' && answer !== ''
+  } else if (question.type === 'country' || question.type === 'text') {
+    return typeof answer === 'string' && answer !== '';
   }
-  return false
-})
+  return false;
+});
 
 const fetchCountries = async () => {
   try {
-    const response = await fetch('https://restcountries.com/v3.1/independent?status=true')
-    if (!response.ok) throw new Error('Error fetching countries')
-    const data = await response.json()
-    countries.value = data.sort((a, b) => a.name.common.localeCompare(b.name.common))
+    const response = await fetch('https://restcountries.com/v3.1/independent?status=true');
+    if (!response.ok) throw new Error('Error fetching countries');
+    const data = await response.json();
+    countries.value = data.sort((a, b) => a.name.common.localeCompare(b.name.common));
   } catch (error) {
-    console.error('Error fetching countries:', error)
+    console.error('Error fetching countries:', error);
   }
-}
+};
 
 const selectCountry = (countryName) => {
-  answers.value[currentQuestionIndex.value] = countryName
-  searchQuery.value = countryName
-  showDropdown.value = false
-}
+  answers.value[currentQuestionIndex.value] = countryName;
+  searchQuery.value = countryName;
+  showDropdown.value = false;
+};
 
 const filterCountries = () => {
-  showDropdown.value = true
-}
+  showDropdown.value = true;
+};
 
 const delayHideDropdown = () => {
   setTimeout(() => {
-    showDropdown.value = false
-  }, 200)
-}
+    showDropdown.value = false;
+  }, 200);
+};
 
 const nextQuestion = () => {
   if (currentQuestionIndex.value < questions.value.length - 1) {
-    currentQuestionIndex.value++
-    if (questions.value[currentQuestionIndex.value].type === 'country') {
-      searchQuery.value = answers.value[currentQuestionIndex.value] || ''
+    currentQuestionIndex.value++;
+    if (questions.value[currentQuestionIndex.value].type === 'country' || questions.value[currentQuestionIndex.value].type === 'text') {
+      searchQuery.value = answers.value[currentQuestionIndex.value] || '';
     } else {
-      searchQuery.value = ''
+      searchQuery.value = '';
     }
   }
-}
+};
 
 const previousQuestion = () => {
   if (currentQuestionIndex.value > 0) {
-    currentQuestionIndex.value--
-    if (questions.value[currentQuestionIndex.value].type === 'country') {
-      searchQuery.value = answers.value[currentQuestionIndex.value] || ''
+    currentQuestionIndex.value--;
+    if (questions.value[currentQuestionIndex.value].type === 'country' || questions.value[currentQuestionIndex.value].type === 'text') {
+      searchQuery.value = answers.value[currentQuestionIndex.value] || '';
     } else {
-      searchQuery.value = ''
+      searchQuery.value = '';
     }
   }
-}
+};
 
-const router = useRouter()
-
-const submitAnswers = () => {
-  console.log('Respuestas enviadas:', JSON.stringify(answers.value, null, 2))
-  router.push('/')
-}
+const submitAnswers = async () => {
+  try {
+    const genderValue = answers.value[1];
+    console.log('Gender value before translation:', genderValue); // Depuración
+    if (genderValue && !['Masculino', 'Femenino'].includes(genderValue)) {
+      error.value = 'Género inválido. Selecciona Masculino o Femenino.';
+      message.value = '';
+      return;
+    }
+    const profile: Profile = {
+      Age: answers.value[0] || 0,
+      Gender: genderValue === 'Masculino' ? 'Male' : genderValue === 'Femenino' ? 'Female' : '',
+      Academic_Level: answers.value[2] || '',
+      Country: answers.value[3] || '',
+      Avg_Daily_Usage_Hours: answers.value[4] || 0,
+      Most_Used_Platform: Array.isArray(answers.value[5]) ? answers.value[5].join(', ') : '',
+      Sleep_Hours_Per_Night: answers.value[6] || 0,
+      Relationship_Status: answers.value[7] || '',
+      Conflicts_Over_Social_Media: answers.value[8] || 0,
+      username: answers.value[9] || '',
+    };
+    console.log('Profile sent to PostStoreProfile:', profile); // Depuración
+    const response = await PostStoreProfile(profile);
+    if (response?.success) {
+      message.value = response.message;
+      error.value = '';
+      router.push('/');
+    } else {
+      error.value = response?.message || 'Error al enviar el perfil';
+      message.value = '';
+    }
+  } catch (err) {
+    error.value = 'Error inesperado al enviar el perfil';
+    message.value = '';
+  }
+};
 
 onMounted(() => {
-  fetchCountries()
+  fetchCountries();
   if (questions.value[currentQuestionIndex.value].type === 'country') {
-    searchQuery.value = answers.value[currentQuestionIndex.value] || ''
+    searchQuery.value = answers.value[currentQuestionIndex.value] || '';
   }
   // Initialize answers for checkbox questions
-  if (!answers.value[1]) answers.value[1] = questions.value[1].multiple ? [] : ''
-  if (!answers.value[2]) answers.value[2] = questions.value[2].multiple ? [] : ''
-  if (!answers.value[5]) answers.value[5] = questions.value[5].multiple ? [] : ''
-  if (!answers.value[7]) answers.value[7] = questions.value[7].multiple ? [] : ''
+  if (!answers.value[1]) answers.value[1] = questions.value[1].multiple ? [] : '';
+  if (!answers.value[2]) answers.value[2] = questions.value[2].multiple ? [] : '';
+  if (!answers.value[5]) answers.value[5] = questions.value[5].multiple ? [] : '';
+  if (!answers.value[7]) answers.value[7] = questions.value[7].multiple ? [] : '';
   // Initialize answers for range questions
-  if (!answers.value[0]) answers.value[0] = 1
-  if (!answers.value[4]) answers.value[4] = 1
-  if (!answers.value[6]) answers.value[6] = 1
-})
+  if (!answers.value[0]) answers.value[0] = 1; // Age
+  if (!answers.value[4]) answers.value[4] = 1; // Avg_Daily_Usage_Hours
+  if (!answers.value[6]) answers.value[6] = 1; // Sleep_Hours_Per_Night
+  if (!answers.value[8]) answers.value[8] = 0; // Conflicts_Over_Social_Media
+  // Initialize answers for text/country questions
+  if (!answers.value[3]) answers.value[3] = ''; // Country
+  if (!answers.value[9]) answers.value[9] = ''; // username
+});
+
+
+
 </script>
 
 <style scoped>
