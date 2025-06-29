@@ -8,5 +8,4 @@ export interface Profile {
   Sleep_Hours_Per_Night: number;
   Relationship_Status: string;
   Conflicts_Over_Social_Media: number;
-  username: string;
 }

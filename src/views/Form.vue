@@ -163,7 +163,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
-const router = useRouter();
 import instagram from '@/assets/imgs/social_media/Instagram.png'
 import tiktok from '@/assets/imgs/social_media/Tiktok.png'
 import facebook from '@/assets/imgs/social_media/Facebook.png'
@@ -202,6 +201,7 @@ import type { Profile } from '@/types';
 const profileStore = useProfileStore();
 const { PostStoreProfile } = profileStore;
 
+const router = useRouter();
 
 const questions = ref([
   {
@@ -303,10 +303,6 @@ const questions = ref([
       { label: 'Muchos conflictos', image: mood1, range: [8, 10] },
     ],
   },
-  {
-    text: '¿Cuál es tu nombre de usuario?',
-    type: 'text',
-  },
 ]);
 
 const currentQuestionIndex = ref(0);
@@ -332,7 +328,7 @@ const currentRangeOption = computed(() => {
       options.find((option) => value >= option.range[0] && value <= option.range[1]) || options[0]
     );
   }
-  return { label: '', description: '', image: '' };
+  return { label: '', image: '' }; // Eliminado description
 });
 
 const isCurrentAnswerValid = computed(() => {
@@ -347,7 +343,7 @@ const isCurrentAnswerValid = computed(() => {
     } else {
       return typeof answer === 'string' && answer !== '';
     }
-  } else if (question.type === 'country' || question.type === 'text') {
+  } else if (question.type === 'country') {
     return typeof answer === 'string' && answer !== '';
   }
   return false;
@@ -383,7 +379,7 @@ const delayHideDropdown = () => {
 const nextQuestion = () => {
   if (currentQuestionIndex.value < questions.value.length - 1) {
     currentQuestionIndex.value++;
-    if (questions.value[currentQuestionIndex.value].type === 'country' || questions.value[currentQuestionIndex.value].type === 'text') {
+    if (questions.value[currentQuestionIndex.value].type === 'country') {
       searchQuery.value = answers.value[currentQuestionIndex.value] || '';
     } else {
       searchQuery.value = '';
@@ -394,7 +390,7 @@ const nextQuestion = () => {
 const previousQuestion = () => {
   if (currentQuestionIndex.value > 0) {
     currentQuestionIndex.value--;
-    if (questions.value[currentQuestionIndex.value].type === 'country' || questions.value[currentQuestionIndex.value].type === 'text') {
+    if (questions.value[currentQuestionIndex.value].type === 'country') {
       searchQuery.value = answers.value[currentQuestionIndex.value] || '';
     } else {
       searchQuery.value = '';
@@ -421,7 +417,6 @@ const submitAnswers = async () => {
       Sleep_Hours_Per_Night: answers.value[6] || 0,
       Relationship_Status: answers.value[7] || '',
       Conflicts_Over_Social_Media: answers.value[8] || 0,
-      username: answers.value[9] || '',
     };
     console.log('Profile sent to PostStoreProfile:', profile); // Depuración
     const response = await PostStoreProfile(profile);
@@ -454,11 +449,9 @@ onMounted(() => {
   if (!answers.value[4]) answers.value[4] = 1; // Avg_Daily_Usage_Hours
   if (!answers.value[6]) answers.value[6] = 1; // Sleep_Hours_Per_Night
   if (!answers.value[8]) answers.value[8] = 0; // Conflicts_Over_Social_Media
-  // Initialize answers for text/country questions
+  // Initialize answers for country question
   if (!answers.value[3]) answers.value[3] = ''; // Country
-  if (!answers.value[9]) answers.value[9] = ''; // username
 });
-
 
 
 </script>

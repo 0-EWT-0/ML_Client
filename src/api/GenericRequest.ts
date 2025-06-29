@@ -4,7 +4,7 @@ import type { RequestOptions } from '@/types/RequestOptions';
 
 
 
-const baseURL = import.meta.env.VITE_URL_API || 'http://localhost:5000';
+const baseURL = import.meta.env.VITE_URL_API || 'https://flaskapi-ml.onrender.com';
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,

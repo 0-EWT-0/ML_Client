@@ -25,7 +25,6 @@ export async function postProfile(profile: Profile){
       Sleep_Hours_Per_Night: profile.Sleep_Hours_Per_Night,
       Relationship_Status: profile.Relationship_Status,
       Conflicts_Over_Social_Media: profile.Conflicts_Over_Social_Media,
-      username: profile.username,
     },
   });
 }
