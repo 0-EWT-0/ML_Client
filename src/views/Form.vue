@@ -15,7 +15,7 @@
             ></div>
           </div>
 
-          <!-- Navigation Buttons -->
+          <!-- Navigation Buttonssss -->
           <div class="flex justify-between mt-6">
             <button
               @click="previousQuestion"

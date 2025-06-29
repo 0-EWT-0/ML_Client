@@ -28,3 +28,4 @@ export async function postProfile(profile: Profile){
     },
   });
 }
+//servicio para crear un perfil

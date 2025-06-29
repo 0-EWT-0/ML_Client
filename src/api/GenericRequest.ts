@@ -31,3 +31,4 @@ export async function GenericRequest<T>({ url, method, headers, params, data }: 
     return null;
   }
 }
+// GenericRequest function to handle API requests

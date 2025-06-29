@@ -7,7 +7,7 @@ import type { ResponseHelper } from '@/types/ResponseHelper';
 export const useProfileStore = defineStore('Profile', () => {
   const profile = ref<Profile>({} as Profile);
 
-  // Obtener un perfil por username
+  // Obtener un perfil por usernameeee
   async function GetStoreProfile(username: string): Promise<ResponseHelper<Profile> | null> {
     const response = await getProfile(username);
     if (response?.success) {
