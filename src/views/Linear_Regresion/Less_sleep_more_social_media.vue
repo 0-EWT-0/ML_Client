@@ -9,7 +9,7 @@
         <!-- Product Image -->
         <div class="relative rounded-2xl overflow-hidden border border-gray-800/50">
           <img
-            src="@/assets/imgs/less_sleep_more_social_media.webp"
+            src="@/assets/imgs/less_sleep_more_social_media.jpg"
             alt="Menos sueño por uso de redes sociales"
             class="w-full h-[500px] object-cover transition-transform duration-500 hover:scale-105"
           />

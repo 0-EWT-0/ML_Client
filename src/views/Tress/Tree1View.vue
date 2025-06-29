@@ -9,7 +9,7 @@
         <!-- Product Image -->
         <div class="relative rounded-2xl overflow-hidden border border-gray-800/50">
           <img
-            src="@/assets/imgs/tree1.webp"
+            src="@/assets/imgs/tree1.jpg"
             alt="¿El estudiante duerme bien según el uso de redes?"
             class="w-full h-[500px] object-cover transition-transform duration-500 hover:scale-105"
           />

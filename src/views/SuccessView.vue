@@ -57,7 +57,7 @@ let timer: number | null = null
 
 const redirectNow = () => {
   if (timer) clearInterval(timer) // Limpia el temporizador
-  router.push('/') // Redirige a la página principal
+  router.push('/home') // Redirige a la página principal
 }
 
 onMounted(() => {

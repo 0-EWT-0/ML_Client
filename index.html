@@ -11,4 +11,18 @@
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
+
+  <style>
+    body {
+      background-color: #030712;
+    }
+
+    @view-transition {
+      navigation: auto;
+    }
+
+    ::view-transition-group(*) {
+      animation-duration: 0.5s;
+    }
+  </style>
 </html>
