@@ -25,14 +25,14 @@ const router = createRouter({
       component: () => import('@/views/Form.vue'),
     },
     {
+      path: '/success',
+      name: 'success',
+      component: () => import('@/views/SuccessView.vue'),
+    },
+    {
       path: '/:pathMatch(.*)',
       name: 'Not found',
       component: () => import('@/views/NotFoundView.vue'),
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('@/views/Test.vue'),
     },
   ],
 })
