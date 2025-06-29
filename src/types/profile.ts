@@ -1,11 +1,11 @@
 export interface Profile {
-  Age: number;
-  Gender: string;
-  Academic_Level: string;
-  Country: string;
-  Avg_Daily_Usage_Hours: number;
-  Most_Used_Platform: string;
-  Sleep_Hours_Per_Night: number;
-  Relationship_Status: string;
-  Conflicts_Over_Social_Media: number;
+  age: number;
+  gender: string;
+  academic_level: string;
+  country: string;
+  avg_daily_usage_hours: number;
+  most_used_platform: string;
+  sleep_hours_per_night: number;
+  relationship_status: string;
+  conflicts_over_social_media: number;
 }

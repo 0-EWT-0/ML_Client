@@ -401,25 +401,56 @@ const previousQuestion = () => {
 const submitAnswers = async () => {
   try {
     const genderValue = answers.value[1];
-    console.log('Gender value before translation:', genderValue); // Depuración
-    if (genderValue && !['Masculino', 'Femenino'].includes(genderValue)) {
-      error.value = 'Género inválido. Selecciona Masculino o Femenino.';
-      message.value = '';
-      return;
-    }
-    const profile: Profile = {
-      Age: answers.value[0] || 0,
-      Gender: genderValue === 'Masculino' ? 'Male' : genderValue === 'Femenino' ? 'Female' : '',
-      Academic_Level: answers.value[2] || '',
-      Country: answers.value[3] || '',
-      Avg_Daily_Usage_Hours: answers.value[4] || 0,
-      Most_Used_Platform: Array.isArray(answers.value[5]) ? answers.value[5].join(', ') : '',
-      Sleep_Hours_Per_Night: answers.value[6] || 0,
-      Relationship_Status: answers.value[7] || '',
-      Conflicts_Over_Social_Media: answers.value[8] || 0,
+
+    const genderMap = {
+      Masculino: 'male',
+      Femenino: 'female',
     };
-    console.log('Profile sent to PostStoreProfile:', profile); // Depuración
+
+    const academicMap = {
+      Secundaria: 'highschool',
+      Licenciatura: 'undergraduate',
+      Graduado: 'graduate',
+    };
+
+    const relationshipMap = {
+      Soltero: 'single',
+      'En relación': 'in relationship',
+      Complicado: 'complicated',
+    };
+
+    const platformMap = {
+      Instagram: 'instagram',
+      Tiktok: 'tiktok',
+      Facebook: 'facebook',
+      Youtube: 'youtube',
+      'X/Twitter': 'twitter',
+      LinkedIn: 'linkedin',
+      Snapchat: 'snapchat',
+      Line: 'line',
+      KakaoTalk: 'kakaotalk',
+      Vkontakte: 'vkontakte',
+      WeChat: 'wechat',
+      WhatsApp: 'whatsapp',
+    };
+
+    const profile: Profile = {
+      age: answers.value[0] || 0,
+      gender: genderMap[genderValue] || '',
+      academic_level: academicMap[answers.value[2]] || '',
+      country: answers.value[3] || '',
+      avg_daily_usage_hours: answers.value[4] || 0,
+      most_used_platform: Array.isArray(answers.value[5])
+        ? answers.value[5].map(name => platformMap[name] || name.toLowerCase()).join(', ')
+        : '',
+      sleep_hours_per_night: answers.value[6] || 0,
+      relationship_status: relationshipMap[answers.value[7]] || '',
+      conflicts_over_social_media: answers.value[8] || 0,
+    };
+
+    console.log('Profile sent to PostStoreProfile:', profile);
     const response = await PostStoreProfile(profile);
+
     if (response?.success) {
       message.value = response.message;
       error.value = '';
