@@ -79,7 +79,7 @@ import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import '@/assets/main.css'
 import tree1 from '@/assets/imgs/tree1.jpg'
-import less_sleep_more_social_media from '@/assets/imgs/Less_sleep_more_social_media.jpg'
+import less_sleep_more_social_media from '@/assets/imgs/less_sleep_more_social_media.jpg'
 
 const products = ref([
   {
