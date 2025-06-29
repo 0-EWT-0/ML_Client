@@ -11,7 +11,7 @@ const router = createRouter({
     {
       path: '/tree1',
       name: 'tree1',
-      component: () => import('@/views/Tress/Tree1View.vue'),
+      component: () => import('@/views/Trees/Tree1View.vue'),
     },
     {
       path: '/less_sleep_more_social_media',
