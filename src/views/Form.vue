@@ -225,7 +225,6 @@ const { PostStoreProfile } = profileStore
 
 const router = useRouter()
 
-
 interface RangeOption {
   type: 'range';
   label: string;
@@ -249,7 +248,6 @@ interface Question {
   max?: number;
   options?: QuestionOption[];
 }
-
 
 const questions = ref<Question[]>([
   {
@@ -352,7 +350,6 @@ const questions = ref<Question[]>([
     ],
   },
 ] as const);
-
 
 const currentQuestionIndex = ref(0)
 type Answer = string | number | string[] | undefined;
@@ -524,22 +521,25 @@ const submitAnswers = async () => {
 
     console.log('Profile sent to PostStoreProfile:', profile);
     const response = await PostStoreProfile(profile);
+    console.log('PostStoreProfile response:', response);
 
-    if (response?.success) {
-      message.value = response.message;
+    if (response?.message === 'Datos insertados correctamente') {
+      console.log('Success response received, redirecting to /success');
+      message.value = response.message || '¡Perfil enviado con éxito!';
       error.value = '';
       router.push('/success');
     } else {
+      console.log('Response not successful:', response?.message);
       error.value = response?.message || 'Error al enviar el perfil';
       message.value = '';
     }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   } catch (err) {
+    console.error('Error in submitAnswers:', err);
     error.value = 'Error inesperado al enviar el perfil';
     message.value = '';
   }
 };
-
 
 onMounted(() => {
   fetchCountries();
