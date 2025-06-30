@@ -332,7 +332,8 @@ const questions = ref([
 ])
 
 const currentQuestionIndex = ref(0)
-const answers = ref({})
+type Answer = string | number | string[] | undefined;
+const answers = ref<Answer[]>(Array(9).fill(undefined));
 const countries = ref([])
 const searchQuery = ref('')
 const showDropdown = ref(false)
@@ -426,26 +427,30 @@ const previousQuestion = () => {
 
 const submitAnswers = async () => {
   try {
-    const genderValue = answers.value[1]
+    // Tipado explícito para genderValue y otros valores de answers
+    const genderValue = answers.value[1] as string | undefined;
+    const academicValue = answers.value[2] as string | undefined;
+    const relationshipValue = answers.value[7] as string | undefined;
+    const platformValue = answers.value[5];
 
-    const genderMap = {
+    const genderMap: Record<string, string> = {
       Masculino: 'male',
       Femenino: 'female',
-    }
+    };
 
-    const academicMap = {
+    const academicMap: Record<string, string> = {
       Secundaria: 'highschool',
       Licenciatura: 'undergraduate',
       Graduado: 'graduate',
-    }
+    };
 
-    const relationshipMap = {
+    const relationshipMap: Record<string, string> = {
       Soltero: 'single',
       'En relación': 'in relationship',
       Complicado: 'complicated',
-    }
+    };
 
-    const platformMap = {
+    const platformMap: Record<string, string> = {
       Instagram: 'instagram',
       Tiktok: 'tiktok',
       Facebook: 'facebook',
@@ -458,57 +463,59 @@ const submitAnswers = async () => {
       Vkontakte: 'vkontakte',
       WeChat: 'wechat',
       WhatsApp: 'whatsapp',
-    }
+    };
 
+    // Construcción del perfil con tipos seguros
     const profile: Profile = {
-      age: answers.value[0] || 0,
-      gender: genderMap[genderValue] || '',
-      academic_level: academicMap[answers.value[2]] || '',
-      country: answers.value[3] || '',
-      avg_daily_usage_hours: answers.value[4] || 0,
-      most_used_platform: Array.isArray(answers.value[5])
-        ? answers.value[5].map((name) => platformMap[name] || name.toLowerCase()).join(', ')
-        : '',
-      sleep_hours_per_night: answers.value[6] || 0,
-      relationship_status: relationshipMap[answers.value[7]] || '',
-      conflicts_over_social_media: answers.value[8] || 0,
-    }
+      age: (answers.value[0] as number | undefined) ?? 0,
+      gender: genderValue ? genderMap[genderValue] ?? '' : '',
+      academic_level: academicValue ? academicMap[academicValue] ?? '' : '',
+      country: (answers.value[3] as string | undefined) ?? '',
+      avg_daily_usage_hours: (answers.value[4] as number | undefined) ?? 0,
+      most_used_platform: Array.isArray(platformValue)
+        ? (platformValue as string[]).map((name) => (platformMap[name] || name.toLowerCase())).join(', ')
+        : (platformValue as string) ? platformMap[platformValue] ?? platformValue.toLowerCase() : '',
+      sleep_hours_per_night: (answers.value[6] as number | undefined) ?? 0,
+      relationship_status: relationshipValue ? relationshipMap[relationshipValue] ?? '' : '',
+      conflicts_over_social_media: (answers.value[8] as number | undefined) ?? 0,
+    };
 
-    console.log('Profile sent to PostStoreProfile:', profile)
-    const response = await PostStoreProfile(profile)
+    console.log('Profile sent to PostStoreProfile:', profile);
+    const response = await PostStoreProfile(profile);
 
     if (response?.success) {
-      message.value = response.message
-      error.value = ''
-      router.push('/success')
+      message.value = response.message;
+      error.value = '';
+      router.push('/success');
     } else {
-      error.value = response?.message || 'Error al enviar el perfil'
-      message.value = ''
+      error.value = response?.message || 'Error al enviar el perfil';
+      message.value = '';
     }
   } catch (err) {
-    error.value = 'Error inesperado al enviar el perfil'
-    message.value = ''
+    error.value = 'Error inesperado al enviar el perfil';
+    message.value = '';
   }
-}
+};
+
 
 onMounted(() => {
-  fetchCountries()
+  fetchCountries();
   if (questions.value[currentQuestionIndex.value].type === 'country') {
-    searchQuery.value = answers.value[currentQuestionIndex.value] || ''
+    searchQuery.value = (answers.value[currentQuestionIndex.value] as string) || '';
   }
   // Initialize answers for checkbox questions
-  if (!answers.value[1]) answers.value[1] = questions.value[1].multiple ? [] : ''
-  if (!answers.value[2]) answers.value[2] = questions.value[2].multiple ? [] : ''
-  if (!answers.value[5]) answers.value[5] = questions.value[5].multiple ? [] : ''
-  if (!answers.value[7]) answers.value[7] = questions.value[7].multiple ? [] : ''
+  if (!answers.value[1]) answers.value[1] = questions.value[1].multiple ? [] : '';
+  if (!answers.value[2]) answers.value[2] = questions.value[2].multiple ? [] : '';
+  if (!answers.value[5]) answers.value[5] = questions.value[5].multiple ? [] : '';
+  if (!answers.value[7]) answers.value[7] = questions.value[7].multiple ? [] : '';
   // Initialize answers for range questions
-  if (!answers.value[0]) answers.value[0] = 1 // Age
-  if (!answers.value[4]) answers.value[4] = 1 // Avg_Daily_Usage_Hours
-  if (!answers.value[6]) answers.value[6] = 1 // Sleep_Hours_Per_Night
-  if (!answers.value[8]) answers.value[8] = 0 // Conflicts_Over_Social_Media
+  if (!answers.value[0]) answers.value[0] = 1; // Age
+  if (!answers.value[4]) answers.value[4] = 1; // Avg_Daily_Usage_Hours
+  if (!answers.value[6]) answers.value[6] = 1; // Sleep_Hours_Per_Night
+  if (!answers.value[8]) answers.value[8] = 0; // Conflicts_Over_Social_Media
   // Initialize answers for country question
-  if (!answers.value[3]) answers.value[3] = '' // Country
-})
+  if (!answers.value[3]) answers.value[3] = ''; // Country
+});
 </script>
 
 <style scoped>
