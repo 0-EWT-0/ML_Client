@@ -69,15 +69,15 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import '@/assets/main.css'
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
+import Header from '../../components/Header.vue'
+import Footer from '../../components/Footer.vue'
 
-const predictionResult = ref(null)
-const graphSrc = ref(null)
-const resultSection = ref(null)
+const predictionResult = ref<string | null>(null)
+const graphSrc = ref<string | undefined>(undefined)
+const resultSection = ref<HTMLElement | null>(null)
 
 const predictSleep = async () => {
   try {
@@ -96,11 +96,11 @@ const predictSleep = async () => {
     if (data.plot_base64) {
       graphSrc.value = `data:image/png;base64,${data.plot_base64}`
     } else {
-      graphSrc.value = null
+      graphSrc.value = undefined
     }
   } catch (error) {
     predictionResult.value = 'Error al realizar la predicción.'
-    graphSrc.value = null
+    graphSrc.value = undefined
     console.error(error)
   } finally {
     scrollToResult()

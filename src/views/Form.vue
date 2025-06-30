@@ -71,11 +71,11 @@
               >
                 <img
                   :src="currentRangeOption.image"
-                  :alt="currentRangeOption.label"
+                  :alt="('label' in currentRangeOption && currentRangeOption.label !== undefined) ? currentRangeOption.label : (('name' in currentRangeOption && currentRangeOption.name) ? currentRangeOption.name : '')"
                   class="w-full h-32 object-contain rounded-t-md mb-4"
                 />
                 <span class="text-sm font-medium text-center text-gray-300">{{
-                  currentRangeOption.label
+                  'label' in currentRangeOption ? currentRangeOption.label : ('name' in currentRangeOption ? currentRangeOption.name : '')
                 }}</span>
               </div>
             </div>
@@ -86,28 +86,28 @@
           >
             <label
               v-for="option in questions[currentQuestionIndex].options"
-              :key="option.name"
+              :key="option.type === 'checkbox' ? option.name : option.label"
               class="relative group bg-gray-800/50 rounded-lg border transition-all duration-300 cursor-pointer pb-4"
               :class="{
-                'border-gray-700 grayscale-90': questions[currentQuestionIndex].multiple
-                  ? !answers[currentQuestionIndex]?.includes(option.name)
-                  : answers[currentQuestionIndex] !== option.name,
-                'border-purple-500 bg-purple-500/10 grayscale-0': questions[currentQuestionIndex]
+                'border-gray-700 grayscale-90': option.type === 'checkbox' && (questions[currentQuestionIndex].multiple
+                  ? !(Array.isArray(answers[currentQuestionIndex]) && (answers[currentQuestionIndex] as string[]).includes(option.name))
+                  : answers[currentQuestionIndex] !== option.name),
+                'border-purple-500 bg-purple-500/10 grayscale-0': option.type === 'checkbox' && (questions[currentQuestionIndex]
                   .multiple
-                  ? answers[currentQuestionIndex]?.includes(option.name)
-                  : answers[currentQuestionIndex] === option.name,
+                  ? (Array.isArray(answers[currentQuestionIndex]) && (answers[currentQuestionIndex] as string[]).includes(option.name))
+                  : answers[currentQuestionIndex] === option.name),
                 'hover:border-purple-500/50 hover:bg-purple-500/20 hover:scale-105 transition-transform duration-500': true,
               }"
             >
               <input
-                v-if="questions[currentQuestionIndex].multiple"
+                v-if="option.type === 'checkbox' && questions[currentQuestionIndex].multiple"
                 type="checkbox"
                 :value="option.name"
                 v-model="answers[currentQuestionIndex]"
                 class="absolute opacity-0"
               />
               <input
-                v-else
+                v-else-if="option.type === 'checkbox'"
                 type="radio"
                 :value="option.name"
                 v-model="answers[currentQuestionIndex]"
@@ -116,20 +116,17 @@
               <div class="flex flex-col items-center">
                 <img
                   :src="option.image"
-                  :alt="option.name"
+                  :alt="option.type === 'checkbox' ? option.name : (option.label ?? '')"
                   class="w-full h-32 object-contain rounded-t-md mb-2"
                 />
                 <span class="text-sm font-medium text-center text-purple-500">{{
-                  option.name
+                  option.type === 'checkbox' ? option.name : (option.label ?? '')
                 }}</span>
               </div>
             </label>
           </div>
           <div
-            v-else-if="
-              questions[currentQuestionIndex].type === 'country' ||
-              questions[currentQuestionIndex].type === 'text'
-            "
+            v-else-if="questions[currentQuestionIndex].type === 'country'"
             class="mb-6 relative"
           >
             <input
@@ -189,7 +186,6 @@ import instagram from '@/assets/imgs/social_media/Instagram.png'
 import tiktok from '@/assets/imgs/social_media/Tiktok.png'
 import facebook from '@/assets/imgs/social_media/Facebook.png'
 import youtube from '@/assets/imgs/social_media/Youtube.png'
-import twitter from '@/assets/imgs/social_media/Twitter.png'
 import x from '@/assets/imgs/social_media/X.png'
 import linkedin from '@/assets/imgs/social_media/LinkedIn.png'
 import snapchat from '@/assets/imgs/social_media/Snapchat.png'
@@ -229,18 +225,44 @@ const { PostStoreProfile } = profileStore
 
 const router = useRouter()
 
-const questions = ref([
+
+interface RangeOption {
+  type: 'range';
+  label: string;
+  image: string;
+  range: number[];
+}
+
+interface NameOption {
+  type: 'checkbox';
+  name: string;
+  image: string;
+}
+
+type QuestionOption = RangeOption | NameOption;
+
+interface Question {
+  text: string;
+  type: 'range' | 'checkbox' | 'country';
+  multiple?: boolean;
+  min?: number;
+  max?: number;
+  options?: QuestionOption[];
+}
+
+
+const questions = ref<Question[]>([
   {
     text: '¿Cuántos años tienes?',
     type: 'range',
     min: 1,
     max: 100,
     options: [
-      { label: 'Bebé', image: baby, range: [1, 5] },
-      { label: 'Niño', image: child, range: [6, 14] },
-      { label: 'Adolescente', image: teenager, range: [15, 20] },
-      { label: 'Adulto', image: adult, range: [21, 60] },
-      { label: 'Adulto mayor', image: grandfather, range: [61, 100] },
+      { type: 'range', label: 'Bebé', image: baby, range: [1, 5] },
+      { type: 'range', label: 'Niño', image: child, range: [6, 14] },
+      { type: 'range', label: 'Adolescente', image: teenager, range: [15, 20] },
+      { type: 'range', label: 'Adulto', image: adult, range: [21, 60] },
+      { type: 'range', label: 'Adulto mayor', image: grandfather, range: [61, 100] },
     ],
   },
   {
@@ -248,8 +270,8 @@ const questions = ref([
     type: 'checkbox',
     multiple: false,
     options: [
-      { name: 'Masculino', image: male },
-      { name: 'Femenino', image: female },
+      { type: 'checkbox', name: 'Masculino', image: male },
+      { type: 'checkbox', name: 'Femenino', image: female },
     ],
   },
   {
@@ -257,9 +279,9 @@ const questions = ref([
     type: 'checkbox',
     multiple: false,
     options: [
-      { name: 'Secundaria', image: highSchool },
-      { name: 'Licenciatura', image: undergraduate },
-      { name: 'Graduado', image: graduate },
+      { type: 'checkbox', name: 'Secundaria', image: highSchool },
+      { type: 'checkbox', name: 'Licenciatura', image: undergraduate },
+      { type: 'checkbox', name: 'Graduado', image: graduate },
     ],
   },
   {
@@ -272,9 +294,9 @@ const questions = ref([
     min: 1,
     max: 24,
     options: [
-      { label: 'Bajo uso', image: mood1, range: [1, 8] },
-      { label: 'Uso moderado', image: mood2, range: [9, 16] },
-      { label: 'Alto uso', image: mood3, range: [17, 24] },
+      { type: 'range', label: 'Bajo uso', image: mood1, range: [1, 8] },
+      { type: 'range', label: 'Uso moderado', image: mood2, range: [9, 16] },
+      { type: 'range', label: 'Alto uso', image: mood3, range: [17, 24] },
     ],
   },
   {
@@ -282,18 +304,18 @@ const questions = ref([
     type: 'checkbox',
     multiple: false,
     options: [
-      { name: 'Instagram', image: instagram },
-      { name: 'Tiktok', image: tiktok },
-      { name: 'Facebook', image: facebook },
-      { name: 'Youtube', image: youtube },
-      { name: 'X/Twitter', image: x },
-      { name: 'LinkedIn', image: linkedin },
-      { name: 'Snapchat', image: snapchat },
-      { name: 'Line', image: line },
-      { name: 'KakaoTalk', image: kakaotalk },
-      { name: 'Vkontakte', image: vkontakte },
-      { name: 'WeChat', image: wechat },
-      { name: 'WhatsApp', image: whatsapp },
+      { type: 'checkbox', name: 'Instagram', image: instagram },
+      { type: 'checkbox', name: 'Tiktok', image: tiktok },
+      { type: 'checkbox', name: 'Facebook', image: facebook },
+      { type: 'checkbox', name: 'Youtube', image: youtube },
+      { type: 'checkbox', name: 'X/Twitter', image: x },
+      { type: 'checkbox', name: 'LinkedIn', image: linkedin },
+      { type: 'checkbox', name: 'Snapchat', image: snapchat },
+      { type: 'checkbox', name: 'Line', image: line },
+      { type: 'checkbox', name: 'KakaoTalk', image: kakaotalk },
+      { type: 'checkbox', name: 'Vkontakte', image: vkontakte },
+      { type: 'checkbox', name: 'WeChat', image: wechat },
+      { type: 'checkbox', name: 'WhatsApp', image: whatsapp },
     ],
   },
   {
@@ -302,9 +324,9 @@ const questions = ref([
     min: 1,
     max: 24,
     options: [
-      { label: 'Sueño corto', image: dormir3, range: [1, 7] },
-      { label: 'Sueño moderado', image: dormir2, range: [8, 16] },
-      { label: 'Sueño largo', image: dormir1, range: [17, 24] },
+      { type: 'range', label: 'Sueño corto', image: dormir3, range: [1, 7] },
+      { type: 'range', label: 'Sueño moderado', image: dormir2, range: [8, 16] },
+      { type: 'range', label: 'Sueño largo', image: dormir1, range: [17, 24] },
     ],
   },
   {
@@ -312,9 +334,9 @@ const questions = ref([
     type: 'checkbox',
     multiple: false,
     options: [
-      { name: 'Soltero', image: single },
-      { name: 'En relación', image: relationship },
-      { name: 'Complicado', image: complicated },
+      { type: 'checkbox', name: 'Soltero', image: single },
+      { type: 'checkbox', name: 'En relación', image: relationship },
+      { type: 'checkbox', name: 'Complicado', image: complicated },
     ],
   },
   {
@@ -323,18 +345,24 @@ const questions = ref([
     min: 0,
     max: 10,
     options: [
-      { label: 'Sin conflictos', image: conflicts0, range: [0, 1] },
-      { label: 'Pocos conflictos', image: conflicts1, range: [2, 3] },
-      { label: 'Varios conflictos', image: conflicts2, range: [4, 7] },
-      { label: 'Muchos conflictos', image: conflicts3, range: [8, 10] },
+      { type: 'range', label: 'Sin conflictos', image: conflicts0, range: [0, 1] },
+      { type: 'range', label: 'Pocos conflictos', image: conflicts1, range: [2, 3] },
+      { type: 'range', label: 'Varios conflictos', image: conflicts2, range: [4, 7] },
+      { type: 'range', label: 'Muchos conflictos', image: conflicts3, range: [8, 10] },
     ],
   },
-])
+] as const);
+
 
 const currentQuestionIndex = ref(0)
 type Answer = string | number | string[] | undefined;
 const answers = ref<Answer[]>(Array(9).fill(undefined));
-const countries = ref([])
+interface Country {
+  name: { common: string };
+  cca3: string;
+  flags: { png: string };
+}
+const countries = ref<Country[]>([])
 const searchQuery = ref('')
 const showDropdown = ref(false)
 const error = ref('')
@@ -352,10 +380,19 @@ const currentRangeOption = computed(() => {
     const value = answers.value[currentQuestionIndex.value] || 1
     const options = questions.value[currentQuestionIndex.value].options
     return (
-      options.find((option) => value >= option.range[0] && value <= option.range[1]) || options[0]
+      options &&
+      options.find(
+        (option) =>
+          option.type === 'range' &&
+          typeof value === 'number' &&
+          value >= option.range[0] &&
+          value <= option.range[1]
+      ) ||
+      (options && options[0]) ||
+      { label: '', image: '' }
     )
   }
-  return { label: '', image: '' } // Eliminado description
+  return { label: '', image: '' }
 })
 
 const isCurrentAnswerValid = computed(() => {
@@ -381,15 +418,18 @@ const fetchCountries = async () => {
     const response = await fetch('https://restcountries.com/v3.1/independent?status=true')
     if (!response.ok) throw new Error('Error fetching countries')
     const data = await response.json()
-    countries.value = data.sort((a, b) => a.name.common.localeCompare(b.name.common))
+    countries.value = data.sort(
+      (a: { name: { common: string } }, b: { name: { common: string } }) =>
+        a.name.common.localeCompare(b.name.common)
+    )
   } catch (error) {
     console.error('Error fetching countries:', error)
   }
 }
 
-const selectCountry = (countryName) => {
+const selectCountry = (countryName: Answer) => {
   answers.value[currentQuestionIndex.value] = countryName
-  searchQuery.value = countryName
+  searchQuery.value = (countryName as string) || ''
   showDropdown.value = false
 }
 
@@ -407,7 +447,7 @@ const nextQuestion = () => {
   if (currentQuestionIndex.value < questions.value.length - 1) {
     currentQuestionIndex.value++
     if (questions.value[currentQuestionIndex.value].type === 'country') {
-      searchQuery.value = answers.value[currentQuestionIndex.value] || ''
+      searchQuery.value = (answers.value[currentQuestionIndex.value] as string) || ''
     } else {
       searchQuery.value = ''
     }
@@ -418,7 +458,7 @@ const previousQuestion = () => {
   if (currentQuestionIndex.value > 0) {
     currentQuestionIndex.value--
     if (questions.value[currentQuestionIndex.value].type === 'country') {
-      searchQuery.value = answers.value[currentQuestionIndex.value] || ''
+      searchQuery.value = (answers.value[currentQuestionIndex.value] as string) || ''
     } else {
       searchQuery.value = ''
     }
@@ -474,7 +514,9 @@ const submitAnswers = async () => {
       avg_daily_usage_hours: (answers.value[4] as number | undefined) ?? 0,
       most_used_platform: Array.isArray(platformValue)
         ? (platformValue as string[]).map((name) => (platformMap[name] || name.toLowerCase())).join(', ')
-        : (platformValue as string) ? platformMap[platformValue] ?? platformValue.toLowerCase() : '',
+        : (typeof platformValue === 'string' && platformValue)
+          ? platformMap[platformValue] ?? platformValue.toLowerCase()
+          : '',
       sleep_hours_per_night: (answers.value[6] as number | undefined) ?? 0,
       relationship_status: relationshipValue ? relationshipMap[relationshipValue] ?? '' : '',
       conflicts_over_social_media: (answers.value[8] as number | undefined) ?? 0,
@@ -491,6 +533,7 @@ const submitAnswers = async () => {
       error.value = response?.message || 'Error al enviar el perfil';
       message.value = '';
     }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     error.value = 'Error inesperado al enviar el perfil';
     message.value = '';

@@ -84,7 +84,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import '@/assets/main.css'
 import Header from '@/components/Header.vue'
@@ -93,7 +93,7 @@ import Footer from '@/components/Footer.vue'
 const mediaHours = ref(null)
 const predictionResult = ref('')
 const graphImage = ref('')
-const resultSection = ref(null)
+const resultSection = ref<HTMLElement | null>(null)
 
 const submitPrediction = async () => {
   if (mediaHours.value === null || mediaHours.value < 0 || mediaHours.value > 24) {
@@ -119,6 +119,7 @@ const submitPrediction = async () => {
       predictionResult.value += ' (No se recibió gráfica)'
       graphImage.value = ''
     }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     predictionResult.value = 'Error al realizar la predicción. Inténtalo de nuevo.'
     graphImage.value = ''
