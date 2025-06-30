@@ -180,6 +180,7 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ name: 'UserForm' })
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import instagram from '@/assets/imgs/social_media/Instagram.png'
