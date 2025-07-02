@@ -4,26 +4,26 @@
   >
     <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
       <div class="text-2xl font-extrabold text-purple-500 tracking-tight">
-        <a href="/home">Synaptica</a>
+        <a href="/">Synaptica</a>
       </div>
       <ul class="flex space-x-8">
         <li>
           <a
-            href="/home"
+            href="/"
             class="text-sm font-medium hover:text-purple-500 transition-colors duration-300"
             >Inicio</a
           >
         </li>
         <li>
           <a
-            href="/"
+            href="/form"
             class="text-sm font-medium hover:text-purple-500 transition-colors duration-300"
             >Formulario</a
           >
         </li>
         <li>
           <a
-            href="/home"
+            href="/"
             class="text-sm font-medium hover:text-purple-500 transition-colors duration-300"
             >Predicciones</a
           >

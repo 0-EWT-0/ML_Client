@@ -22,9 +22,9 @@
             >cómo las redes sociales afectan tu vida diaria?</span
           >
         </h1>
-        <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-          Descubre cómo el uso de redes sociales afecta tu mente, tu tiempo y tu rendimiento
-          académico. Analiza, predice y mejora con aprendiza automático.
+        <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed">
+          Descubre cómo se ve afectada tu mente, tu tiempo y tu rendimiento académico. Completa el
+          formulario de manera anónima y observa tus resultados.
         </p>
         <button
           class="bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
@@ -42,7 +42,7 @@
         Elige lo que quieres entender de ti
       </h2>
       <p
-        class="text-lg md:text-xl text-gray-300 mb-16 max-w-3xl mx-auto leading-relaxed text-center"
+        class="text-lg md:text-xl text-gray-400 mb-16 max-w-3xl mx-auto leading-relaxed text-center"
       >
         Personaliza tus predicciones y descubre cómo tus hábitos digitales influyen en lo que más
         importa.
@@ -80,43 +80,82 @@ import Footer from '@/components/Footer.vue'
 import '@/assets/main.css'
 import tree1 from '@/assets/imgs/tree1.jpg'
 import less_sleep_more_social_media from '@/assets/imgs/less_sleep_more_social_media.jpg'
+import question1 from '@/assets/imgs/cards/question1.jpg'
+import question2 from '@/assets/imgs/cards/question2.jpg'
+import question3 from '@/assets/imgs/cards/question3.jpg'
+import question4 from '@/assets/imgs/cards/question4.jpg'
+import question5 from '@/assets/imgs/cards/question5.jpg'
+import question6 from '@/assets/imgs/cards/question6.jpg'
+import question7 from '@/assets/imgs/cards/question7.jpg'
+import question8 from '@/assets/imgs/cards/question8.jpg'
+import question9 from '@/assets/imgs/cards/question9.jpg'
 
 const products = ref([
+  // {
+  //   title: '¿El estudiante duerme bien según el uso de redes?',
+  //   description: 'Revolutionary processing power for next-gen applications.',
+  //   image: tree1,
+  //   route: '/tree1',
+  // },
+  // {
+  //   title: 'Menos sueño por uso de redes sociales',
+  //   description: 'Advanced analytics driven by artificial intelligence.',
+  //   image: less_sleep_more_social_media,
+  //   route: '/less_sleep_more_social_media',
+  // },
   {
-    title: '¿El estudiante duerme bien según el uso de redes?',
-    description: 'Revolutionary processing power for next-gen applications.',
-    image: tree1,
-    route: '/tree1',
+    title: '¿Cada vez te aíslas más de los demás?',
+    description:
+      'Explora si tu tiempo en línea disminuye tu conexión con amigos o familiares en la vida real.',
+    image: question1,
   },
   {
-    title: 'Menos sueño por uso de redes sociales',
-    description: 'Advanced analytics driven by artificial intelligence.',
-    image: less_sleep_more_social_media,
-    route: '/less_sleep_more_social_media',
+    title: '¿Tu relación se complica por estar siempre conectado?',
+    description:
+      'Pregunta si tu hábito de estar siempre en línea está generando tensiones o conflictos con tu pareja.',
+    image: question2,
   },
   {
-    title: 'CloudSync',
-    description: 'Unified data management across all platforms.',
-    image:
-      'https://images.unsplash.com/photo-1516321318423-4b6b6b6b6b6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    title: '¿Estar conectado provoca discusiones en tucírculo social?',
+    description:
+      'Indaga si el uso excesivo del celular genera discusiones frecuentes con tu pareja o amigos.',
+    image: question3,
   },
   {
-    title: 'VR Nexus',
-    description: 'Immersive virtual reality experiences redefined.',
-    image:
-      'https://images.unsplash.com/photo-1593508512255-86ab7664402d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    title: '¿Una mala relación no te deja dormir?',
+    description:
+      'Evalúa el impacto emocional de una relación conflictiva y cómo esta afecta a tu descanso nocturno.',
+    image: question4,
   },
   {
-    title: 'IoT Connect',
-    description: 'Smart connectivity for your IoT ecosystem.',
-    image:
-      'https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    title: '¿Entre más tiempo pasas en línea, más problemas enfrentas?',
+    description:
+      'Analiza si el uso constante de plataformas digitales se asocia con un aumento de problemas personales.',
+    image: question5,
   },
   {
-    title: 'CyberGuard',
-    description: 'Unbreakable security for your digital assets.',
-    image:
-      'https://images.unsplash.com/photo-1563206767-5b18f935e59a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+    title: '¿Tu nivel de conexión refleja tu salud mental?',
+    description:
+      'Evalúa si la intensidad de tu uso digital puede predecir o afectar tu bienestar psicológico.',
+    image: question6,
+  },
+  {
+    title: '¿Lo digital te quita el sueño y la calma?',
+    description:
+      'Analiza cómo el uso constante de lo digital puede afectar tu descanso y salud mental.',
+    image: question7,
+  },
+  {
+    title: '¿Estar en pareja baja tus notas?',
+    description:
+      'Explora si el tener una relación sentimental afecta negativamente tu desempeño académico.',
+    image: question8,
+  },
+  {
+    title: '¿Tu adicción digital afecta tu rendimiento académico?',
+    description:
+      'Indaga si la obsesión por estar conectado interfiere con tu capacidad para estudiar o concentrarte.',
+    image: question9,
   },
 ])
 </script>

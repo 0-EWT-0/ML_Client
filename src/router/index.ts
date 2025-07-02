@@ -5,8 +5,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'form',
-      component: () => import('@/views/Form.vue'),
+      name: 'home',
+      component: () => import('@/views/HomeView.vue'),
     },
     {
       path: '/tree1',
@@ -20,9 +20,9 @@ const router = createRouter({
     },
 
     {
-      path: '/home',
-      name: 'home',
-      component: () => import('@/views/HomeView.vue'),
+      path: '/form',
+      name: 'form',
+      component: () => import('@/views/FormView.vue'),
     },
     {
       path: '/success',
