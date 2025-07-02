@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,14 +11,13 @@ const router = createRouter({
     {
       path: '/tree1',
       name: 'tree1',
-      component: () => import('@/views/Trees/Tree1View.vue'),
+      component: () => import('@/views/Trees/TreeOneView.vue'),
     },
     {
       path: '/less_sleep_more_social_media',
       name: 'less_sleep_more_social_media',
       component: () => import('@/views/Linear_Regresion/Less_sleep_more_social_media.vue'),
     },
-
     {
       path: '/form',
       name: 'form',
@@ -35,6 +34,6 @@ const router = createRouter({
       component: () => import('@/views/NotFoundView.vue'),
     },
   ],
-})
+});
 
-export default router
+export default router;
