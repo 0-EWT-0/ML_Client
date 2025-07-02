@@ -73,7 +73,7 @@
   </div>
 </template>
 
-<script  setup lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
@@ -108,6 +108,7 @@ const products = ref([
     description:
       'Explora si tu tiempo en línea disminuye tu conexión con amigos o familiares en la vida real.',
     image: question1,
+    route: '/example',
   },
   {
     title: '¿Tu relación se complica por estar siempre conectado?',

@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,11 +29,16 @@ const router = createRouter({
       component: () => import('@/views/SuccessView.vue'),
     },
     {
+      path: '/example',
+      name: 'example',
+      component: () => import('@/views/Example/ExampleView.vue'),
+    },
+    {
       path: '/:pathMatch(.*)',
       name: 'Not found',
       component: () => import('@/views/NotFoundView.vue'),
     },
   ],
-});
+})
 
-export default router;
+export default router
