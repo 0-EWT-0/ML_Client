@@ -36,10 +36,33 @@
             <button
               v-else
               @click="submitAnswers"
-              :disabled="!isCurrentAnswerValid"
+              :disabled="!isCurrentAnswerValid || isSubmitting"
               class="bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Enviar
+              <span v-if="isSubmitting" class="flex items-center">
+              <svg
+                class="animate-spin h-5 w-5 mr-2 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Enviando
+            </span>
+            <span v-else>Enviar</span>
             </button>
           </div>
         </div>
@@ -214,8 +237,8 @@ import mood3 from '@/assets/imgs/icons/mood3.png'
 import dormir1 from '@/assets/imgs/icons/dormir1.png'
 import dormir2 from '@/assets/imgs/icons/dormir2.png'
 import dormir3 from '@/assets/imgs/icons/dormir3.png'
-import { useProfileStore } from '@/stores/ProfileStore'
-import type { Profile } from '@/types/profile'
+import { useProfileStore } from '@/stores/ProfileStore.ts'
+import type { Profile } from '@/types/profile.ts'
 import conflicts0 from '@/assets/imgs/icons/conflicts0.png'
 import conflicts1 from '@/assets/imgs/icons/conflicts1.png'
 import conflicts2 from '@/assets/imgs/icons/conflicts2.png'
@@ -365,6 +388,7 @@ const searchQuery = ref('')
 const showDropdown = ref(false)
 const error = ref('')
 const message = ref('')
+const isSubmitting = ref(false);
 
 const filteredCountries = computed(() => {
   if (!searchQuery.value) return countries.value
@@ -465,6 +489,7 @@ const previousQuestion = () => {
 
 const submitAnswers = async () => {
   try {
+    isSubmitting.value = true; 
     // Tipado explícito para genderValue y otros valores de answers
     const genderValue = answers.value[1] as string | undefined;
     const academicValue = answers.value[2] as string | undefined;
@@ -539,6 +564,8 @@ const submitAnswers = async () => {
     console.error('Error in submitAnswers:', err);
     error.value = 'Error inesperado al enviar el perfil';
     message.value = '';
+  } finally {
+    isSubmitting.value = false; // Desactivar estado de carga
   }
 };
 

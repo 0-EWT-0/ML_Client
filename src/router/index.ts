@@ -1,12 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'form',
-      component: () => import('@/views/Form.vue'),
+      name: 'home',
+      component: () => import('@/views/HomeView.vue'),
     },
     {
       path: '/tree1',
@@ -19,9 +19,9 @@ const router = createRouter({
       component: () => import('@/views/Linear_Regresion/Less_sleep_more_social_media.vue'),
     },
     {
-      path: '/home',
-      name: 'home',
-      component: () => import('@/views/HomeView.vue'),
+      path: '/form',
+      name: 'form',
+      component: () => import('@/views/FormView.vue'),
     },
     {
       path: '/success',
@@ -29,11 +29,16 @@ const router = createRouter({
       component: () => import('@/views/SuccessView.vue'),
     },
     {
+      path: '/example',
+      name: 'example',
+      component: () => import('@/views/Example/ExampleView.vue'),
+    },
+    {
       path: '/:pathMatch(.*)',
       name: 'Not found',
       component: () => import('@/views/NotFoundView.vue'),
     },
   ],
-});
+})
 
-export default router;
+export default router

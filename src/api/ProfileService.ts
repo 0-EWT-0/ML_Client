@@ -1,20 +1,19 @@
-import type { Profile } from "@/types/profile";
-import {GenericRequest} from "./GenericRequest";
-import type { ResponseHelper } from "@/types/ResponseHelper";
+import type { Profile } from '@/types/profile'
+import { GenericRequest } from './GenericRequest'
+import type { ResponseHelper } from '@/types/ResponseHelper'
 
-const urlBase = "data";
+const urlBase = 'data'
 
 export async function getProfile(username: string): Promise<ResponseHelper<Profile> | null> {
   return await GenericRequest<Profile>({
     url: `${urlBase}/${username}`,
     method: 'GET',
-  });
+  })
 }
-export async function postProfile(profile: Profile){
-  return await GenericRequest<Profile>
-  ({
+export async function postProfile(profile: Profile) {
+  return await GenericRequest<Profile>({
     url: `${urlBase}`,
-    method: "POST",
+    method: 'POST',
     data: {
       age: profile.age,
       gender: profile.gender,
@@ -26,6 +25,6 @@ export async function postProfile(profile: Profile){
       relationship_status: profile.relationship_status,
       conflicts_over_social_media: profile.conflicts_over_social_media,
     },
-  });
+  })
 }
 //servicio para crear un perfil

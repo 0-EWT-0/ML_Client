@@ -24,5 +24,19 @@
     ::view-transition-group(*) {
       animation-duration: 0.5s;
     }
+
+    /* Para navegadores WebKit (Chrome, Safari, etc.) */
+    ::-webkit-scrollbar {
+      width: 12px; /* Ancho de la barra */
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #030712; /* Color del fondo de la barra */
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #9ca3af; /* Color del pulgar */
+      border-radius: 6px; /* Bordes redondeados */
+    }
   </style>
 </html>
