@@ -63,7 +63,9 @@
       </div>
       <div class="flex justify-between md:col-span-2">
         <span>Salud mental estimada:</span>
-        <span class="font-bold text-purple-400">{{ predictions.mental_health_score }} / 10</span>
+        <span
+        :class="transformMentalHealthScore(predictions.mental_health_score).class"
+        class="font-bold" >{{ transformMentalHealthScore(predictions.mental_health_score ).text}}</span>
       </div>
     </div>
 
@@ -140,6 +142,15 @@ const transformRelationshipStatus = (value: string) => {
     case 'single': return 'Soltero'
     case 'complicated': return 'Complicado'
     default: return 'Desconocido'
+  }
+}
+
+const transformMentalHealthScore = (value: number) => {
+  if(value <= 3) return {class: 'text-red-800', text:'Señales de malestar o un posible problema'}
+  if (value >= 4 && value <= 7) {
+    return {class: 'text-amber-500', text:'Estado regular, podrías mejorar'}
+  } else {
+    return {class: 'text-green-400', text:'Estás bien, todo en orden'}
   }
 }
 
