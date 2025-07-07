@@ -11,30 +11,43 @@
       <span class="text-green-300 font-semibold">duerman lo suficiente</span>.
     </p>
 
-    <apexchart type="bar" height="400" :options="chartOptions" :series="chartSeries" />
+    <div class="min-h-[300px] flex items-center justify-center">
+      <div v-if="loadSwitch" class="text-purple-300 animate-pulse text-center">
+        <div
+          class="w-8 h-8 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"
+        ></div>
+        Cargando datos...
+      </div>
+
+      <apexchart v-else type="bar" height="400" :options="chartOptions" :series="chartSeries" />
+    </div>
 
     <div class="mt-6 text-center">
       <button
         @click="fetchData"
         class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded text-white"
+        :disabled="loadSwitch"
       >
         Volver a cargar datos
       </button>
     </div>
+
+    <Profile class="m-6 mt-6" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useTreeStore } from '@/stores/TreesStore'
+import Profile from '@/components/Profile.vue'
 
 const treeStore = useTreeStore()
 const chartSeries = ref<any[]>([])
 const chartOptions = ref({})
+const loadSwitch = ref(true)
 
 function processData() {
   const data = treeStore.studentSleep.data_points
-
   const buckets: Record<string, { total: number; duermeBien: number }> = {}
 
   data.forEach((p) => {
@@ -85,9 +98,12 @@ function processData() {
       theme: 'dark',
     },
   }
+
+  loadSwitch.value = false
 }
 
 function fetchData() {
+  loadSwitch.value = true
   treeStore.loadStudentSleep().then(processData)
 }
 
