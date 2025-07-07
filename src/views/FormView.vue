@@ -489,46 +489,22 @@ const previousQuestion = () => {
 
 const submitAnswers = async () => {
   try {
-    isSubmitting.value = true; 
-    // Tipado explícito para genderValue y otros valores de answers
+    isSubmitting.value = true;
+
     const genderValue = answers.value[1] as string | undefined;
     const academicValue = answers.value[2] as string | undefined;
     const relationshipValue = answers.value[7] as string | undefined;
     const platformValue = answers.value[5];
 
-    const genderMap: Record<string, string> = {
-      Masculino: 'male',
-      Femenino: 'female',
-    };
-
-    const academicMap: Record<string, string> = {
-      Secundaria: 'highschool',
-      Licenciatura: 'undergraduate',
-      Graduado: 'graduate',
-    };
-
-    const relationshipMap: Record<string, string> = {
-      Soltero: 'single',
-      'En relación': 'in relationship',
-      Complicado: 'complicated',
-    };
-
+    const genderMap: Record<string, string> = { Masculino: 'male', Femenino: 'female' };
+    const academicMap: Record<string, string> = { Secundaria: 'highschool', Licenciatura: 'undergraduate', Graduado: 'graduate' };
+    const relationshipMap: Record<string, string> = { Soltero: 'single', 'En relación': 'in relationship', Complicado: 'complicated' };
     const platformMap: Record<string, string> = {
-      Instagram: 'instagram',
-      Tiktok: 'tiktok',
-      Facebook: 'facebook',
-      Youtube: 'youtube',
-      'X/Twitter': 'twitter',
-      LinkedIn: 'linkedin',
-      Snapchat: 'snapchat',
-      Line: 'line',
-      KakaoTalk: 'kakaotalk',
-      Vkontakte: 'vkontakte',
-      WeChat: 'wechat',
-      WhatsApp: 'whatsapp',
+      Instagram: 'instagram', Tiktok: 'tiktok', Facebook: 'facebook', Youtube: 'youtube',
+      'X/Twitter': 'twitter', LinkedIn: 'linkedin', Snapchat: 'snapchat', Line: 'line',
+      KakaoTalk: 'kakaotalk', Vkontakte: 'vkontakte', WeChat: 'wechat', WhatsApp: 'whatsapp',
     };
 
-    // Construcción del perfil con tipos seguros
     const profile: Profile = {
       age: (answers.value[0] as number | undefined) ?? 0,
       gender: genderValue ? genderMap[genderValue] ?? '' : '',
@@ -536,8 +512,8 @@ const submitAnswers = async () => {
       country: (answers.value[3] as string | undefined) ?? '',
       avg_daily_usage_hours: (answers.value[4] as number | undefined) ?? 0,
       most_used_platform: Array.isArray(platformValue)
-        ? (platformValue as string[]).map((name) => (platformMap[name] || name.toLowerCase())).join(', ')
-        : (typeof platformValue === 'string' && platformValue)
+        ? (platformValue as string[]).map((name) => platformMap[name] || name.toLowerCase()).join(', ')
+        : typeof platformValue === 'string' && platformValue
           ? platformMap[platformValue] ?? platformValue.toLowerCase()
           : '',
       sleep_hours_per_night: (answers.value[6] as number | undefined) ?? 0,
@@ -549,7 +525,7 @@ const submitAnswers = async () => {
     const response = await PostStoreProfile(profile);
     console.log('PostStoreProfile response:', response);
 
-    if (response?.message === 'Datos insertados correctamente') {
+    if (response && response.success) {
       console.log('Success response received, redirecting to /success');
       message.value = response.message || '¡Perfil enviado con éxito!';
       error.value = '';
@@ -559,13 +535,12 @@ const submitAnswers = async () => {
       error.value = response?.message || 'Error al enviar el perfil';
       message.value = '';
     }
-
   } catch (err) {
     console.error('Error in submitAnswers:', err);
     error.value = 'Error inesperado al enviar el perfil';
     message.value = '';
   } finally {
-    isSubmitting.value = false; // Desactivar estado de carga
+    isSubmitting.value = false;
   }
 };
 

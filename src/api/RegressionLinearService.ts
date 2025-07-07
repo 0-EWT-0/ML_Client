@@ -9,7 +9,7 @@ export async function predictSocialMediaMentalHealth(
   profile: Partial<Profile>,
   prediction: PredictionResponse
 ): Promise<ResponseHelper<PredictionResponse> | null> {
-  return await GenericRequest<PredictionResponse>({
+  const response = await GenericRequest<PredictionResponse>({
     url: `${urlBase}/social_media_mental_health`,
     method: 'POST',
     data: {
@@ -17,4 +17,16 @@ export async function predictSocialMediaMentalHealth(
       addicted_score: prediction.addicted_score,
     },
   })
+
+  // Ensure the response is of type ResponseHelper<PredictionResponse> or null
+  if (
+    response &&
+    typeof response === 'object' &&
+    'success' in response &&
+    'message' in response &&
+    'data' in response
+  ) {
+    return response as ResponseHelper<PredictionResponse>
+  }
+  return null
 }
