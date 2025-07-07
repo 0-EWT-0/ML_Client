@@ -14,11 +14,11 @@
     <div class="grid grid-cols-2 gap-4 text-sm text-gray-300">
       <div><span class="text-purple-400 font-semibold">Edad:</span> {{ profile.age }}</div>
       <div>
-        <span class="text-purple-400 font-semibold">Género:</span> {{ capitalize(profile.gender) }}
+        <span class="text-purple-400 font-semibold">Género:</span> {{ transformGender(profile.gender) }}
       </div>
       <div>
         <span class="text-purple-400 font-semibold">Nivel académico:</span>
-        {{ capitalize(profile.academic_level) }}
+        {{ transformAcedemicLevel(profile.academic_level) }}
       </div>
       <div><span class="text-purple-400 font-semibold">País:</span> {{ profile.country }}</div>
       <div>
@@ -35,7 +35,7 @@
       </div>
       <div>
         <span class="text-purple-400 font-semibold">Estado sentimental:</span>
-        {{ capitalize(profile.relationship_status) }}
+        {{ transformRelationshipStatus(profile.relationship_status) }}
       </div>
       <div>
         <span class="text-purple-400 font-semibold">Conflictos en redes:</span>
@@ -116,4 +116,31 @@ const capitalize = (text: string) => {
   if (!text) return ''
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
+
+const transformAcedemicLevel = (value: string) => {
+  switch (value){
+    case 'high school': return 'Secundaria'
+    case 'undergraduate': return 'Licenciatura'
+    case 'graduated': return 'Graduado'
+    default: return 'Desconocido'
+  }
+}
+
+const transformGender = (value: string) => {
+  switch(value){
+    case 'male': return 'Masculino'
+    case 'female': return 'Femenino'
+    default: return 'Desconocido'
+  }
+}
+
+const transformRelationshipStatus = (value: string) => {
+  switch(value){
+    case 'in relationship': return 'En una relación'
+    case 'single': return 'Soltero'
+    case 'complicated': return 'Complicado'
+    default: return 'Desconocido'
+  }
+}
+
 </script>
