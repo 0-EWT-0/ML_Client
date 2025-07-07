@@ -1,5 +1,6 @@
 <template>
   <header
+  v-if="profile.isCompletedForm"
     class="bg-gray-900/30 backdrop-blur-lg fixed top-0 w-full z-50 border-b border-gray-800/50"
   >
     <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
@@ -14,13 +15,13 @@
             >Inicio</a
           >
         </li>
-        <li>
+        <!-- <li>
           <a
             href="/form"
             class="text-sm font-medium hover:text-purple-500 transition-colors duration-300"
             >Formulario</a
           >
-        </li>
+        </li> -->
         <li>
           <a
             href="/"
@@ -32,3 +33,18 @@
     </nav>
   </header>
 </template>
+
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
+
+const profile = ref<any>({})
+const predictions = ref<any>({})
+
+onMounted(() => {
+  const storedProfile = localStorage.getItem('profileData')
+  const storedPredictions = localStorage.getItem('predictionsData')
+
+  if (storedProfile) profile.value = JSON.parse(storedProfile)
+  if (storedPredictions) predictions.value = JSON.parse(storedPredictions)
+})
+</script>

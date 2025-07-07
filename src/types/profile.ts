@@ -8,5 +8,6 @@ export interface Profile {
   sleep_hours_per_night: number
   relationship_status: string
   conflicts_over_social_media: number
+  isCompletedForm: boolean
 }
 //Tipado de la respuesta del perfil

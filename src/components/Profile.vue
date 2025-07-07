@@ -1,8 +1,14 @@
 <template>
+<h2
+        class="text-4xl md:text-5xl font-extrabold text-center mb-6 text-purple-500 tracking-tight"
+      >
+        Acerca de ti
+      </h2>
+
   <div
     class="bg-gray-900/50 border border-purple-700/30 backdrop-blur-sm text-white rounded-2xl shadow-lg p-6 w-full max-w-2xl mx-auto mt-10"
   >
-    <h2 class="text-2xl font-bold text-purple-400 mb-4 text-center">Tu Perfil Personalizado</h2>
+    <!-- <h2 class="text-2xl font-bold text-purple-400 mb-4 text-center">Tu Perfil Personalizado</h2> -->
 
     <!-- Datos del usuario -->
     <div class="grid grid-cols-2 gap-4 text-sm text-gray-300">

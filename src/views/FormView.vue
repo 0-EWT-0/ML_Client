@@ -519,6 +519,7 @@ const submitAnswers = async () => {
       sleep_hours_per_night: (answers.value[6] as number | undefined) ?? 0,
       relationship_status: relationshipValue ? relationshipMap[relationshipValue] ?? '' : '',
       conflicts_over_social_media: (answers.value[8] as number | undefined) ?? 0,
+      isCompletedForm:true,
     };
 
     console.log('Profile sent to PostStoreProfile:', profile);

@@ -23,21 +23,38 @@
           >
         </h1>
         <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed">
-          Descubre cómo se ve afectada tu mente, tu tiempo y tu rendimiento académico. Completa el
-          formulario de manera anónima y observa tus resultados.
+          Descubre cómo se ve afectada tu mente, tu tiempo y tu rendimiento académico. <span class="font-bold text-gray-300">Completa el
+          formulario de manera anónima y observa tus resultados.</span>
         </p>
+
         <button
-          class="bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
+        v-if="!profile.isCompletedForm"
+@click="router.push('/form')"
+          class="relative overflow-hidden bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
         >
-          <a href="/form"> Comenzar </a>
+          📝 Comenzar
+          <span class="shine"></span>
         </button>
+
+        <div v-else>
+        <button
+        @click="scrollToProfile('profileSection')"
+          class="relative overflow-hidden bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-indigo-500/30 mb-2"
+        >
+        
+           👀 Explora tus resultados
+           <span class="shine"></span>
+        </button>
+          <Arrow class="flex justify-center"/>
+        </div>
       </div>
     </section>
 
-    <Profile></Profile>
-
+    <div v-if="profile.isCompletedForm" id="profileSection">
+    <Profile />
     <!-- Products (Bento Grid) -->
-    <section class="container mx-auto px-6 py-20">
+    <section
+    class="container mx-auto px-6 py-34">
       <h2
         class="text-4xl md:text-5xl font-extrabold text-center mb-6 text-purple-500 tracking-tight"
       >
@@ -69,14 +86,15 @@
         </div>
       </div>
     </section>
+    </div>
 
     <!-- Footer -->
-    <Footer />
+    <Footer v-if="profile.isCompletedForm"/>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import '@/assets/main.css'
@@ -92,6 +110,29 @@ import question7 from '@/assets/imgs/cards/question7.jpg'
 import question8 from '@/assets/imgs/cards/question8.jpg'
 import question9 from '@/assets/imgs/cards/question9.jpg'
 import Profile from '@/components/Profile.vue'
+import Arrow from '@/assets/icons/arrow.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const profile = ref<any>({})
+const predictions = ref<any>({})
+
+onMounted(() => {
+  const storedProfile = localStorage.getItem('profileData')
+  const storedPredictions = localStorage.getItem('predictionsData')
+
+  if (storedProfile) profile.value = JSON.parse(storedProfile)
+  if (storedPredictions) predictions.value = JSON.parse(storedPredictions)
+})
+
+const scrollToProfile = (id: string) => {
+  const section = document.getElementById(id)
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
 
 const products = ref([
   // {
@@ -173,4 +214,30 @@ const products = ref([
 ])
 </script>
 
-<style></style>
+<style scoped>
+/* Puedes poner esto en App.vue, main.css o tu layout */
+.shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: shine 2.5s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+</style>
