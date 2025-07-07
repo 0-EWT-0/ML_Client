@@ -110,7 +110,7 @@ import question7 from '@/assets/imgs/cards/question7.jpg'
 import question8 from '@/assets/imgs/cards/question8.jpg'
 import question9 from '@/assets/imgs/cards/question9.jpg'
 import Profile from '@/components/Profile.vue'
-import Arrow from '@/assets/icons/arrow.vue'
+import Arrow from '@/assets/icons/Arrow.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
