@@ -2,7 +2,7 @@
   <div>
     <h1>Less Sleep in Complicated Relationships</h1>
 
-    <!-- Resultado en texto -->
+    <!-- Resultado en textooo -->
     <div>
       <p v-if="predictionResult" class="text-lg">
         {{ predictionResult }}
