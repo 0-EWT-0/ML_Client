@@ -23,13 +23,15 @@
           >
         </h1>
         <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed">
-          Descubre cómo se ve afectada tu mente, tu tiempo y tu rendimiento académico. <span class="font-bold text-gray-300">Completa el
-          formulario de manera anónima y observa tus resultados.</span>
+          Descubre cómo se ve afectada tu mente, tu tiempo y tu rendimiento académico.
+          <span class="font-bold text-gray-300"
+            >Completa el formulario de manera anónima y observa tus resultados.</span
+          >
         </p>
 
         <button
-        v-if="!profile.isCompletedForm"
-@click="router.push('/form')"
+          v-if="!profile.isCompletedForm"
+          @click="router.push('/form')"
           class="relative overflow-hidden bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/30"
         >
           📝 Comenzar
@@ -37,59 +39,57 @@
         </button>
 
         <div v-else>
-        <button
-        @click="scrollToProfile('profileSection')"
-          class="relative overflow-hidden bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-indigo-500/30 mb-2"
-        >
-        
-           👀 Explora tus resultados
-           <span class="shine"></span>
-        </button>
-          <Arrow class="flex justify-center"/>
+          <button
+            @click="scrollToProfile('profileSection')"
+            class="relative overflow-hidden bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-indigo-500/30 mb-2"
+          >
+            👀 Explora tus resultados
+            <span class="shine"></span>
+          </button>
+          <Arrow class="flex justify-center" />
         </div>
       </div>
     </section>
 
     <div v-if="profile.isCompletedForm" id="profileSection">
-    <Profile />
-    <!-- Products (Bento Grid) -->
-    <section
-    class="container mx-auto px-6 py-34">
-      <h2
-        class="text-4xl md:text-5xl font-extrabold text-center mb-6 text-purple-500 tracking-tight"
-      >
-        Elige lo que quieres entender de ti
-      </h2>
-      <p
-        class="text-lg md:text-xl text-gray-400 mb-16 max-w-3xl mx-auto leading-relaxed text-center"
-      >
-        Personaliza tus predicciones y descubre cómo tus hábitos digitales influyen en lo que más
-        importa.
-      </p>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-        <div
-          v-for="(product, index) in products"
-          :key="index"
-          class="group bg-gray-900/50 rounded-2xl overflow-hidden border border-gray-800/50 hover:border-purple-500/50 transition-all duration-300"
+      <Profile />
+      <!-- Products (Bento Grid) -->
+      <section class="container mx-auto px-6 py-34">
+        <h2
+          class="text-4xl md:text-5xl font-extrabold text-center mb-6 text-purple-500 tracking-tight"
         >
-          <a :href="product.route">
-            <img
-              :src="product.image"
-              :alt="product.title"
-              class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div class="p-6">
-              <h3 class="text-lg font-semibold mb-2 text-purple-400">{{ product.title }}</h3>
-              <p class="text-sm text-gray-400 leading-relaxed">{{ product.description }}</p>
-            </div>
-          </a>
+          Elige lo que quieres entender de ti
+        </h2>
+        <p
+          class="text-lg md:text-xl text-gray-400 mb-16 max-w-3xl mx-auto leading-relaxed text-center"
+        >
+          Personaliza tus predicciones y descubre cómo tus hábitos digitales influyen en lo que más
+          importa.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+          <div
+            v-for="(product, index) in products"
+            :key="index"
+            class="group bg-gray-900/50 rounded-2xl overflow-hidden border border-gray-800/50 hover:border-purple-500/50 transition-all duration-300"
+          >
+            <a :href="product.route">
+              <img
+                :src="product.image"
+                :alt="product.title"
+                class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div class="p-6">
+                <h3 class="text-lg font-semibold mb-2 text-purple-400">{{ product.title }}</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">{{ product.description }}</p>
+              </div>
+            </a>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
     </div>
 
     <!-- Footer -->
-    <Footer v-if="profile.isCompletedForm"/>
+    <Footer v-if="profile.isCompletedForm" />
   </div>
 </template>
 
@@ -109,6 +109,7 @@ import question6 from '@/assets/imgs/cards/question6.jpg'
 import question7 from '@/assets/imgs/cards/question7.jpg'
 import question8 from '@/assets/imgs/cards/question8.jpg'
 import question9 from '@/assets/imgs/cards/question9.jpg'
+import question10 from '@/assets/imgs/cards/question9.jpg'
 import Profile from '@/components/Profile.vue'
 import Arrow from '@/assets/icons/Arrow.vue'
 import { useRouter } from 'vue-router'
@@ -132,7 +133,6 @@ const scrollToProfile = (id: string) => {
     section.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
-
 
 const products = ref([
   // {
@@ -211,6 +211,14 @@ const products = ref([
     image: question9,
     route: '/social_media_impact_academics',
   },
+  {
+    title: '¿Duermes lo suficiente según tu tiempo en redes sociales?',
+    description:
+      'Descubre si la cantidad de horas que pasas en redes podría estar afectando la calidad de tu descanso nocturno.',
+    image: question10,
+    route: '/student_sleeps_enough',
+  },
+  {},
 ])
 </script>
 
@@ -239,5 +247,4 @@ const products = ref([
     left: 100%;
   }
 }
-
 </style>
