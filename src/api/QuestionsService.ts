@@ -53,7 +53,7 @@ export async function postLess_sleep_more_social_media(prediction: PredictionRes
 
 export async function postRelations_affect_academy_preformance(profile: Profile) {
   return await GenericRequest<PredictionResponse>({
-    url: `${urlBase}/less_sleep_relation`,
+    url: `${urlBase}/academic_impact`,
     method: 'POST',
     data: {
       relationship_status: profile.relationship_status,
@@ -63,7 +63,7 @@ export async function postRelations_affect_academy_preformance(profile: Profile)
 
 export async function postLess_sleep_in_complicated_relationships(prediction: PredictionResponse) {
   return await GenericRequest<PredictionResponse>({
-    url: `${urlBase}/less_sleep_in_complicated_relationships`,
+    url: `${urlBase}/less_sleep_relation`,
     method: 'POST',
     data: {
         sleep_hours: prediction.sleep_hours,

@@ -48,11 +48,22 @@
     <!-- Predicciones -->
     <h3 class="text-lg font-semibold text-purple-300 mb-2">Predicciones</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-200 mb-4">
-      <div class="flex justify-between">
+      <div class="flex justify-start gap-2">
         <span>Adicción estimada:</span>
-        <span class="font-bold text-purple-400">{{ predictions.addicted_score }} / 20</span>
+        <span 
+        :class="transformAddictedScore(predictions.addicted_score).class"
+        class="font-bold">{{ transformAddictedScore(predictions.addicted_score).text }}
+      </span>
       </div>
-      <div class="flex justify-between">
+
+<div class="flex justify-start gap-2 ">
+        <span>Salud mental estimada:</span>
+        <span
+        :class="transformMentalHealthScore(predictions.mental_health_score).class"
+        class="font-bold" >{{ transformMentalHealthScore(predictions.mental_health_score ).text}}</span>
+      </div>
+
+      <div class="flex justify-start gap-2 md:col-span-2">
         <span>Afecta el rendimiento:</span>
         <span
           class="font-bold"
@@ -61,10 +72,7 @@
           {{ predictions.affects_academic_performance ? 'Sí' : 'No' }}
         </span>
       </div>
-      <div class="flex justify-between md:col-span-2">
-        <span>Salud mental estimada:</span>
-        <span class="font-bold text-purple-400">{{ predictions.mental_health_score }} / 10</span>
-      </div>
+      
     </div>
 
     <!-- Botón Ver más -->
@@ -140,6 +148,24 @@ const transformRelationshipStatus = (value: string) => {
     case 'single': return 'Soltero'
     case 'complicated': return 'Complicado'
     default: return 'Desconocido'
+  }
+}
+
+const transformMentalHealthScore = (value: number) => {
+  if(value <= 3) return {class: 'text-red-800', text:'Posibles problemas'}
+  if (value >= 4 && value <= 7) {
+    return {class: 'text-amber-500', text:'Podrías mejorar'}
+  } else {
+    return {class: 'text-green-400', text:'Todo en orden'}
+  }
+}
+
+const transformAddictedScore = (value: number) => {
+  if(value <= 6) return {class: 'text-green-800', text:'Bajo'}
+  if (value >= 7 && value <= 13) {
+    return {class: 'text-amber-500', text:'Moderado'}
+  } else {
+    return {class: 'text-red-800', text:'Alto'}
   }
 }
 

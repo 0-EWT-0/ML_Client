@@ -4,4 +4,6 @@ export interface PredictionResponse {
   plot_base64: string
   coefficient_mental: number
   coefficient_conflicts: number
+  is_in_relationship?: string;
+  sleepHours: number
 }

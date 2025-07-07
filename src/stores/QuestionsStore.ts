@@ -225,58 +225,125 @@ async function postLessSleepMoreSocialMedia(): Promise<PredictionResponse | null
   }
 }
 
-  // 6. postRelations_affect_academy_preformance
-  async function postRelationsAffectAcademyPerformance(profile: Profile): Promise<PredictionResponse | null> {
-    try {
-      const response = await postRelations_affect_academy_preformance(profile);
-      console.log('Respuesta postRelationsAffectAcademyPerformance:', response);
 
-      if (!response) {
-        error.value = 'No se recibió respuesta del servidor';
-        return null;
-      }
+  // Función auxiliar para determinar is_in_relationship
+function getIsInRelationship(status: string | undefined): string {
+  if (!status) return "false";
+  const lowerStatus = status.toLowerCase();
+  if (lowerStatus === "single" || lowerStatus === "complicated") {
+    return "false";
+  } else if (lowerStatus === "in relationship") {
+    return "true";
+  }
+  return "false"; // Valor por defecto
+}
 
-      if ('data' in response && response.data) {
-        prediction.value = response.data;
-      } else {
-        prediction.value = response as PredictionResponse;
-      }
-
-      error.value = null;
-      localStorage.setItem('predictionData', JSON.stringify(prediction.value));
-      return prediction.value;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Error al procesar relaciones académicas';
+// 6. postRelations_affect_academy_preformance
+async function postRelationsAffectAcademyPerformance(): Promise<PredictionResponse | null> {
+  try {
+    const storedProfile = localStorage.getItem('profileData');
+    if (!storedProfile) {
+      error.value = 'No se encontraron datos de perfil en localStorage';
       return null;
     }
+
+    const profileData = JSON.parse(storedProfile) as Profile;
+    const relationshipStatus = profileData.relationship_status;
+    const isInRelationship = getIsInRelationship(relationshipStatus);
+
+    console.log('relationship_status desde localStorage:', relationshipStatus);
+    console.log('is_in_relationship enviado al endpoint:', isInRelationship);
+
+    const response = await postRelations_affect_academy_preformance({
+      is_in_relationship: isInRelationship,
+      age: 0,
+      gender: '',
+      academic_level: '',
+      country: '',
+      avg_daily_usage_hours: 0,
+      most_used_platform: '',
+      sleep_hours_per_night: 0,
+      relationship_status: '',
+      conflicts_over_social_media: 0,
+      isCompletedForm: false
+    });
+    console.log('Respuesta cruda del servidor:', response);
+
+    if (!response) {
+      error.value = 'No se recibió respuesta del servidor';
+      return null;
+    }
+
+    if ('data' in response && response.data) {
+      prediction.value = response.data;
+    } else {
+      prediction.value = response as PredictionResponse;
+    }
+
+    console.log('prediction.value actualizado:', prediction.value);
+
+    error.value = null;
+    localStorage.setItem('predictionData', JSON.stringify(prediction.value));
+    return prediction.value;
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Error al procesar relaciones académicas';
+    console.error('Error en postRelationsAffectAcademyPerformance:', err);
+    return null;
   }
+}
 
   // 7. postLess_sleep_in_complicated_relationships
-  async function postLessSleepInComplicatedRelationships(predictionData: PredictionResponse): Promise<PredictionResponse | null> {
-    try {
-      const response = await postLess_sleep_in_complicated_relationships(predictionData);
-      console.log('Respuesta postLessSleepInComplicatedRelationships:', response);
-
-      if (!response) {
-        error.value = 'No se recibió respuesta del servidor';
-        return null;
-      }
-
-      if ('data' in response && response.data) {
-        prediction.value = response.data;
-      } else {
-        prediction.value = response as PredictionResponse;
-      }
-
-      error.value = null;
-      localStorage.setItem('predictionData', JSON.stringify(prediction.value));
-      return prediction.value;
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Error al procesar relaciones complicadas';
+  // 7. postLess_sleep_in_complicated_relationships
+async function postLessSleepInComplicatedRelationships(): Promise<PredictionResponse | null> {
+  try {
+    const storedProfile = localStorage.getItem('profileData');
+    if (!storedProfile) {
+      error.value = 'No se encontraron datos de perfil en localStorage';
       return null;
     }
-  }
 
+    const profileData = JSON.parse(storedProfile) as Profile;
+    const sleepHours = profileData.sleep_hours_per_night || 0;
+
+    console.log('Datos a enviar:', {
+      sleep_hours: sleepHours,
+    });
+
+    const response = await postLess_sleep_in_complicated_relationships({
+      sleep_hours: sleepHours,
+      addicted_score: 0,
+      affects_academic_performance: 0,
+      mental_health_score: 0,
+      plot_base64: '',
+      coefficient_mental: 0,
+      coefficient_conflicts: 0,
+      prediction_mental_health: 0,
+      prediction_conflicts: 0,
+      media_hours: 0
+    });
+    console.log('Respuesta postLessSleepInComplicatedRelationships:', response);
+
+    if (!response) {
+      error.value = 'No se recibió respuesta del servidor';
+      return null;
+    }
+
+    if ('data' in response && response.data) {
+      prediction.value = response.data;
+    } else {
+      prediction.value = response as PredictionResponse;
+    }
+
+    console.log('prediction.value actualizado:', prediction.value);
+
+    error.value = null;
+    localStorage.setItem('predictionData', JSON.stringify(prediction.value));
+    return prediction.value;
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : 'Error al procesar relaciones complicadas';
+    return null;
+  }
+}
   // 8. getSocial_media_impact_academics
   async function getSocialMediaImpactAcademics(): Promise<any | null> {
     try {

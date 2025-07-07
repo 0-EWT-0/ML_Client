@@ -10,4 +10,5 @@ export interface PredictionResponse {
   prediction_conflicts: number;
   sleep_hours: number;
   media_hours: number;
+  is_in_relationship?: string;
 }

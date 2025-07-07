@@ -9,5 +9,6 @@ export interface Profile {
   relationship_status: string
   conflicts_over_social_media: number
   isCompletedForm: boolean
+  is_in_relationship: string
 }
 //Tipado de la respuesta del perfil
