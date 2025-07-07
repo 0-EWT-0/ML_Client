@@ -81,17 +81,34 @@
         @click="showGraph = !showGraph"
         class="text-sm text-purple-400 hover:text-purple-300 underline transition-all"
       >
-        {{ showGraph ? 'Ocultar gráficas' : 'Ver más al respecto' }}
+        {{ showGraph ? 'Ocultar' : 'Ver más al respecto' }}
       </button>
     </div>
 
     <!-- Gráfica -->
-    <div v-if="hasValidData && showGraph" class="mt-6 h-[300px] w-full">
+    <div v-if="hasValidData && showGraph" class="mt-6 w-full">
+      <div class="h-[300px]">
       <PredictionChart
         :addicted="predictions.addicted_score"
         :academicImpact="predictions.affects_academic_performance"
         :mentalHealth="predictions.mental_health_score"
       />
+      </div>
+
+      <!-- Consejos -->
+       <div class="mt-12">
+        <h3 class="text-lg font-semibold text-purple-300 mb-2">Consejos que podrían ayudarte</h3>
+        <h4 class="text-purple-400 font-semibold">🧠 En tu salud mental</h4>
+        <p class="text-sm text-gray-300" v-for="(tips, index) in transformMentalHealthScore(predictions.mental_health_score).tips " :key="index">
+          <span
+          :class="transformMentalHealthScore(predictions.mental_health_score).class">● </span>{{ tips }}
+        </p>
+
+        <h4 class="text-purple-400 font-semibold mt-4">🤕 En tu nivel de adicción</h4>
+        <p class="text-sm text-gray-300" v-for="(tips, index) in transformAddictedScore(predictions.addicted_score).tips " :key="index">
+          <span :class="transformAddictedScore(predictions.addicted_score).class">● </span>{{ tips }}
+        </p>
+       </div>
     </div>
   </div>
 </template>
@@ -152,20 +169,20 @@ const transformRelationshipStatus = (value: string) => {
 }
 
 const transformMentalHealthScore = (value: number) => {
-  if(value <= 3) return {class: 'text-red-800', text:'Posibles problemas'}
+  if(value <= 3) return {class: 'text-red-800', text:'Posibles problemas', tips:['Habla con alguien de confianza', 'Busca ayuda profesional', 'No ignores tus emociones, tu bienestar es importante']}
   if (value >= 4 && value <= 7) {
-    return {class: 'text-amber-500', text:'Podrías mejorar'}
+    return {class: 'text-amber-500', text:'Podrías mejorar',tips:['Dedica tiempo a ti mismo y tus hobbies', 'Haz pausas y respira profundamente', 'Mantén hábitos saludables: sueño, comida y actividad física']}
   } else {
-    return {class: 'text-green-400', text:'Todo en orden'}
+    return {class: 'text-green-400', text:'Todo en orden', tips:['Sigue cuidando tu salud emocional', 'Ayuda a otros si puedes', 'Mantén tus rutinas positivas y redes de apoyo']}
   }
 }
 
 const transformAddictedScore = (value: number) => {
-  if(value <= 6) return {class: 'text-green-800', text:'Bajo'}
+  if(value <= 6) return {class: 'text-green-800', text:'Bajo', tips:['Mantén el equilibrio y autocontrol', 'Conócete y pon límites saludables', 'Disfruta sin depender']}
   if (value >= 7 && value <= 13) {
-    return {class: 'text-amber-500', text:'Moderado'}
+    return {class: 'text-amber-500', text:'Moderado', tips:['Reflexiona si la conducta interfiere con tu vida', 'Prueba reducir el tiempo o la frecuencia', 'Busca actividades alternativas que disfrutes']}
   } else {
-    return {class: 'text-red-800', text:'Alto'}
+    return {class: 'text-red-800', text:'Alto', tips:['Reconoce que necesitas apoyo, y está bien', 'Habla con un profesional o centro de ayuda', 'No estás solo: dar el primer paso es valiente']}
   }
 }
 
