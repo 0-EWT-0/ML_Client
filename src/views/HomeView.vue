@@ -104,59 +104,67 @@ const products = ref([
   //   route: '/less_sleep_more_social_media',
   // },
   {
-    title: '¿Cada vez te aíslas más de los demás?',
+    title: 'Salud mental según nivel de uso de redes sociales',
     description:
       'Explora si tu tiempo en línea disminuye tu conexión con amigos o familiares en la vida real.',
     image: question1,
-    route: '/example',
+    route: '/mental_health_by_usage_boxplot',
   },
   {
-    title: '¿Tu relación se complica por estar siempre conectado?',
+    title: '¿A qué grupo de adictos a las redes sociales perteneces según tu edad, nivel de adicción y uso diario?',
     description:
       'Pregunta si tu hábito de estar siempre en línea está generando tensiones o conflictos con tu pareja.',
     image: question2,
+    route: '/daily_hours_addicted_age_relation',
   },
   {
-    title: '¿Estar conectado provoca discusiones en tucírculo social?',
+    title: '¿Tu nivel de adicción a las redes sociales te trae conflictos?',
     description:
       'Indaga si el uso excesivo del celular genera discusiones frecuentes con tu pareja o amigos.',
     image: question3,
+    route: '/social_media_addiction_conflicts',
   },
   {
-    title: '¿Una mala relación no te deja dormir?',
+    title: '¿Que tanto influye las horas de sueno en tu salud mental?',
     description:
       'Evalúa el impacto emocional de una relación conflictiva y cómo esta afecta a tu descanso nocturno.',
     image: question4,
+    route: '/slepp_hours_affect_mental_health',
   },
   {
-    title: '¿Entre más tiempo pasas en línea, más problemas enfrentas?',
+    title: '¿Tu uso de redes sociales afecta tus horas de sueño?',
     description:
       'Analiza si el uso constante de plataformas digitales se asocia con un aumento de problemas personales.',
     image: question5,
+    route: '/less_sleep_more_social_medias',
   },
   {
-    title: '¿Tu nivel de conexión refleja tu salud mental?',
+    title: '¿Las redes sociales te aíslan?',
     description:
       'Evalúa si la intensidad de tu uso digital puede predecir o afectar tu bienestar psicológico.',
     image: question6,
+    route: '/social_media_mental_health',
   },
   {
-    title: '¿Lo digital te quita el sueño y la calma?',
+    title: '¿Estar en una relacion afecta el rendimiento academico?',
     description:
       'Analiza cómo el uso constante de lo digital puede afectar tu descanso y salud mental.',
     image: question7,
+    route: '/relations_affect_academy_preformance',
   },
   {
-    title: '¿Estar en pareja baja tus notas?',
+    title: '¿Estar en un estado de relacion complicado pasas menos horas de sueño?',
     description:
       'Explora si el tener una relación sentimental afecta negativamente tu desempeño académico.',
     image: question8,
+    route: '/less_sleep_in_complicated_relationships',
   },
   {
-    title: '¿Tu adicción digital afecta tu rendimiento académico?',
+    title: '¿Tu uso en redes sociales afecta tu rendimiento académico?',
     description:
       'Indaga si la obsesión por estar conectado interfiere con tu capacidad para estudiar o concentrarte.',
     image: question9,
+    route: '/social_media_impact_academics',
   },
 ])
 </script>
