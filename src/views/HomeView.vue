@@ -34,6 +34,8 @@
       </div>
     </section>
 
+    <Profile></Profile>
+
     <!-- Products (Bento Grid) -->
     <section class="container mx-auto px-6 py-20">
       <h2
@@ -89,6 +91,7 @@ import question6 from '@/assets/imgs/cards/question6.jpg'
 import question7 from '@/assets/imgs/cards/question7.jpg'
 import question8 from '@/assets/imgs/cards/question8.jpg'
 import question9 from '@/assets/imgs/cards/question9.jpg'
+import Profile from '@/components/Profile.vue'
 
 const products = ref([
   // {
@@ -111,7 +114,8 @@ const products = ref([
     route: '/mental_health_by_usage_boxplot',
   },
   {
-    title: '¿A qué grupo de adictos a las redes sociales perteneces según tu edad, nivel de adicción y uso diario?',
+    title:
+      '¿A qué grupo de adictos a las redes sociales perteneces según tu edad, nivel de adicción y uso diario?',
     description:
       'Pregunta si tu hábito de estar siempre en línea está generando tensiones o conflictos con tu pareja.',
     image: question2,
