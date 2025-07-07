@@ -14,11 +14,11 @@
     <div class="grid grid-cols-2 gap-4 text-sm text-gray-300">
       <div><span class="text-purple-400 font-semibold">Edad:</span> {{ profile.age }}</div>
       <div>
-        <span class="text-purple-400 font-semibold">Género:</span> {{ capitalize(profile.gender) }}
+        <span class="text-purple-400 font-semibold">Género:</span> {{ transformGender(profile.gender) }}
       </div>
       <div>
         <span class="text-purple-400 font-semibold">Nivel académico:</span>
-        {{ capitalize(profile.academic_level) }}
+        {{ transformAcedemicLevel(profile.academic_level) }}
       </div>
       <div><span class="text-purple-400 font-semibold">País:</span> {{ profile.country }}</div>
       <div>
@@ -35,7 +35,7 @@
       </div>
       <div>
         <span class="text-purple-400 font-semibold">Estado sentimental:</span>
-        {{ capitalize(profile.relationship_status) }}
+        {{ transformRelationshipStatus(profile.relationship_status) }}
       </div>
       <div>
         <span class="text-purple-400 font-semibold">Conflictos en redes:</span>
@@ -48,11 +48,22 @@
     <!-- Predicciones -->
     <h3 class="text-lg font-semibold text-purple-300 mb-2">Predicciones</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-200 mb-4">
-      <div class="flex justify-between">
+      <div class="flex justify-start gap-2">
         <span>Adicción estimada:</span>
-        <span class="font-bold text-purple-400">{{ predictions.addicted_score }} / 20</span>
+        <span 
+        :class="transformAddictedScore(predictions.addicted_score).class"
+        class="font-bold">{{ transformAddictedScore(predictions.addicted_score).text }}
+      </span>
       </div>
-      <div class="flex justify-between">
+
+<div class="flex justify-start gap-2 ">
+        <span>Salud mental estimada:</span>
+        <span
+        :class="transformMentalHealthScore(predictions.mental_health_score).class"
+        class="font-bold" >{{ transformMentalHealthScore(predictions.mental_health_score ).text}}</span>
+      </div>
+
+      <div class="flex justify-start gap-2 md:col-span-2">
         <span>Afecta el rendimiento:</span>
         <span
           class="font-bold"
@@ -61,10 +72,7 @@
           {{ predictions.affects_academic_performance ? 'Sí' : 'No' }}
         </span>
       </div>
-      <div class="flex justify-between md:col-span-2">
-        <span>Salud mental estimada:</span>
-        <span class="font-bold text-purple-400">{{ predictions.mental_health_score }} / 10</span>
-      </div>
+      
     </div>
 
     <!-- Botón Ver más -->
@@ -116,4 +124,49 @@ const capitalize = (text: string) => {
   if (!text) return ''
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }
+
+const transformAcedemicLevel = (value: string) => {
+  switch (value){
+    case 'high school': return 'Secundaria'
+    case 'undergraduate': return 'Licenciatura'
+    case 'graduated': return 'Graduado'
+    default: return 'Desconocido'
+  }
+}
+
+const transformGender = (value: string) => {
+  switch(value){
+    case 'male': return 'Masculino'
+    case 'female': return 'Femenino'
+    default: return 'Desconocido'
+  }
+}
+
+const transformRelationshipStatus = (value: string) => {
+  switch(value){
+    case 'in relationship': return 'En una relación'
+    case 'single': return 'Soltero'
+    case 'complicated': return 'Complicado'
+    default: return 'Desconocido'
+  }
+}
+
+const transformMentalHealthScore = (value: number) => {
+  if(value <= 3) return {class: 'text-red-800', text:'Posibles problemas'}
+  if (value >= 4 && value <= 7) {
+    return {class: 'text-amber-500', text:'Podrías mejorar'}
+  } else {
+    return {class: 'text-green-400', text:'Todo en orden'}
+  }
+}
+
+const transformAddictedScore = (value: number) => {
+  if(value <= 6) return {class: 'text-green-800', text:'Bajo'}
+  if (value >= 7 && value <= 13) {
+    return {class: 'text-amber-500', text:'Moderado'}
+  } else {
+    return {class: 'text-red-800', text:'Alto'}
+  }
+}
+
 </script>
