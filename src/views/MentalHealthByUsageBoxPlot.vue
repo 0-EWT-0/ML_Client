@@ -45,6 +45,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { usePredictionStore } from '@/stores/QuestionsStore'
+import Profile from '@/components/Profile.vue'
 
 const predictionStore = usePredictionStore()
 const chartSeries = ref<any[]>([])

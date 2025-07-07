@@ -14,6 +14,11 @@ const router = createRouter({
       component: () => import('@/views/Trees/TreeOneView.vue'),
     },
     {
+      path: '/student_sleeps_enough',
+      name: 'student_sleeps_enough',
+      component: () => import('@/views/StudentSleepEnough.vue'),
+    },
+    {
       path: '/less_sleep_more_social_media',
       name: 'less_sleep_more_social_media',
       component: () => import('@/views/Linear_Regresion/Less_sleep_more_social_media.vue'),
@@ -37,8 +42,7 @@ const router = createRouter({
       path: '/mental_health_by_usage_boxplot',
       name: 'Salud mental según nivel de uso de redes sociales',
       component: () => import('@/views/MentalHealthByUsageBoxplot.vue'),
-    }
-    ,
+    },
     {
       path: '/daily_hours_addicted_age_relation',
       name: '¿A qué grupo de adictos a las redes sociales perteneces según tu edad, nivel de adicción y uso diario?',
