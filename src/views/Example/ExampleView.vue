@@ -44,8 +44,19 @@
       <ul class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <li class="flex items-start space-x-4">
           <span class="text-purple-600">•</span>
-          <p id="socialMediaSleepResult" class="text-sm text-gray-400 leading-relaxed">
+          <p class="text-sm text-gray-400 leading-relaxed">
             {{ predictionResult || 'Ingresa tu información y obtén una predicción personalizada' }}
+            <span v-if="regressionStore.error" class="text-red-500">{{ regressionStore.error }}</span>
+          </p>
+        </li>
+        <li v-if="regressionStore.prediction" class="flex items-start space-x-4">
+          <span class="text-purple-600">•</span>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Predicción Mental: {{ regressionStore.prediction.prediction_mental_health }}<br>
+            Conflictos: {{ regressionStore.prediction.prediction_conflicts }}<br>
+            Coef. Mental: {{ regressionStore.prediction.coefficient_mental }}<br>
+            Coef. Conflictos: {{ regressionStore.prediction.coefficient_conflicts }}<br>
+            Plot Base64 (texto): {{ regressionStore.prediction.plot_base64.substring(0, 50) + '...' }}
           </p>
         </li>
       </ul>
@@ -55,11 +66,13 @@
     <section class="container mx-auto px-6 py-16">
       <div class="relative rounded-2xl overflow-hidden border border-gray-800/50">
         <img
-          :src="graphSrc"
+          v-if="regressionStore.prediction?.plot_base64"
+          :src="`data:image/png;base64,${regressionStore.prediction.plot_base64}`"
           alt="Gráfica generada"
           class="w-full object-cover transition-transform duration-500 hover:scale-105"
-          :class="{ hidden: !graphSrc }"
+          @error="handleImageError"
         />
+        <div v-else class="text-red-500 text-center">No se pudo cargar la gráfica: {{ imageError || 'Datos no disponibles' }}</div>
         <div class="absolute bottom-0 left-0 right-0 h-32"></div>
       </div>
     </section>
@@ -71,40 +84,56 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import '@/assets/main.css'
+import { useRegressionLinearStore } from '@/stores/RegressionLinearStore'
 import Header from '../../components/Header.vue'
 import Footer from '../../components/Footer.vue'
 
 const predictionResult = ref<string | null>(null)
-const graphSrc = ref<string | undefined>(undefined)
 const resultSection = ref<HTMLElement | null>(null)
+const imageError = ref<string | null>(null)
+
+const regressionStore = useRegressionLinearStore()
+
+const formData = ref({
+  avg_daily_usage_hours: 6.7,
+  addicted_score: 7.8,
+})
 
 const predictSleep = async () => {
   try {
-    const response = await fetch('http://127.0.0.1:5000/predict/student_sleeps_enough')
+    const { avg_daily_usage_hours, addicted_score } = formData.value
 
-    if (!response.ok) throw new Error('Error en la respuesta del servidor')
+    console.log('📤 Enviando al store desde vista:', {
+      avg_daily_usage_hours,
+      addicted_score
+    })
 
-    const data = await response.json()
-    scrollToResult()
+    const response = await regressionStore.predictSocialMediaMentalHealthStore(
+      avg_daily_usage_hours,
+      addicted_score
+    )
 
-    // Display prediction result
-    predictionResult.value =
-      data.prediction === 1 ? 'El estudiante duerme bien.' : 'El estudiante no duerme bien.'
-
-    // Display graph if provided
-    if (data.plot_base64) {
-      graphSrc.value = `data:image/png;base64,${data.plot_base64}`
-    } else {
-      graphSrc.value = undefined
+    if (!response || !response.data) {
+      throw new Error(regressionStore.error || 'Respuesta inválida del servidor')
     }
+
+    const result = response.data
+    predictionResult.value = `🧠 Predicción mental: ${result.prediction_mental_health}, 🤝 Conflictos: ${result.prediction_conflicts}, Coef. Mental: ${result.coefficient_mental}, Coef. Conflictos: ${result.coefficient_conflicts}`
+    imageError.value = null
+
   } catch (error) {
-    predictionResult.value = 'Error al realizar la predicción.'
-    graphSrc.value = undefined
-    console.error(error)
+    const errorMessage = (error instanceof Error && error.message) ? error.message : 'Desconocido'
+    predictionResult.value = `Hubo un error al hacer la predicción: ${errorMessage}`
+    imageError.value = errorMessage
+    console.error('❌ Error desde vista:', error)
   } finally {
     scrollToResult()
   }
+}
+
+const handleImageError = () => {
+  imageError.value = 'Error al cargar la imagen (base64 inválido o corrupto)'
+  console.error('❌ Error al renderizar la imagen. plot_base64:', regressionStore.prediction?.plot_base64)
 }
 
 const scrollToResult = () => {

@@ -1,8 +1,9 @@
+// src/api/GenericRequest.ts
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
 import type { ResponseHelper } from '@/types/ResponseHelper'
 import type { RequestOptions } from '@/types/RequestOptions'
 
-const baseURL = import.meta.env.VITE_URL_API || 'https://flaskapi-ml.onrender.com'
+const baseURL = import.meta.env.VITE_URL_API || 'http://localhost:5000'
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,
@@ -14,7 +15,7 @@ export async function GenericRequest<T>({
   headers,
   params,
   data,
-}: RequestOptions): Promise<ResponseHelper<T> | null> {
+}: RequestOptions): Promise<ResponseHelper<T> | T | null> {
   try {
     const config: AxiosRequestConfig = {
       url: `${baseURL}/${url}`,
@@ -25,7 +26,14 @@ export async function GenericRequest<T>({
     }
 
     const response = await axiosInstance(config)
-    return response.data as ResponseHelper<T>
+    // Verificar si la respuesta incluye success/message o es un objeto plano
+    if (response.data && typeof response.data === 'object') {
+      if ('success' in response.data && 'message' in response.data && 'data' in response.data) {
+        return response.data as ResponseHelper<T>
+      }
+      return response.data as T // Asumir que es el objeto plano si no hay envolvente
+    }
+    return null
   } catch (error) {
     if (error instanceof axios.AxiosError) {
       console.error(`Request failed: ${error.message}`, error.response?.data)
@@ -35,4 +43,3 @@ export async function GenericRequest<T>({
     return null
   }
 }
-// GenericRequest function to handle API requests
