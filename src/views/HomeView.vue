@@ -215,7 +215,7 @@ const products = ref([
     title: '¿Duermes lo suficiente según tu tiempo en redes sociales?',
     description:
       'Descubre si la cantidad de horas que pasas en redes podría estar afectando la calidad de tu descanso nocturno.',
-    image: question10,
+    image: question5,
     route: '/student_sleeps_enough',
   },
   {},
