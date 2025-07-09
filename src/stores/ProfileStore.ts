@@ -26,8 +26,8 @@ export const useProfileStore = defineStore('Profile', () => {
 
       // Actualizar el perfil con los datos enviados y los devueltos por el servidor
       if (typeof response === 'object' && 'usuario' in response) {
-        profile.value = { ...profileData, ...response.usuario }
-        predictions.value = response.predictions || null // Guardar predicciones si existen
+        //profile.value = { ...profileData, ...response.usuario }
+        //predictions.value = response.predictions || null // Guardar predicciones si existen
         error.value = null
 
         // Persistir en localStorage
@@ -35,7 +35,10 @@ export const useProfileStore = defineStore('Profile', () => {
         if (predictions.value) {
           localStorage.setItem('predictionsData', JSON.stringify(predictions.value))
         }
-        console.log('✅ Perfil y predicciones guardados en localStorage:', { profile: profile.value, predictions: predictions.value })
+        console.log('✅ Perfil y predicciones guardados en localStorage:', {
+          profile: profile.value,
+          predictions: predictions.value,
+        })
       } else if ('success' in response && 'message' in response && 'data' in response) {
         profile.value = response.data
         predictions.value = null // No hay predicciones en este caso
@@ -58,18 +61,18 @@ export const useProfileStore = defineStore('Profile', () => {
 
       return {
         success: true,
-        message: response.message || 'Perfil creado exitosamente',
+        //message: response.message || 'Perfil creado exitosamente',
         data: profile.value,
-        plot_base64: response.graphs?.academic_plot || '',
+        //plot_base64: response.graphs?.academic_plot || '',
       } as ResponseHelper<Profile>
     } catch (error) {
-      error.value = error.message || 'Error al procesar el perfil'
+      error = error || 'Error al procesar el perfil'
       console.error('Error en PostStoreProfile:', error)
       profile.value = profileData
       localStorage.setItem('profileData', JSON.stringify(profile.value))
       return {
         success: false,
-        message: error.value,
+        // message: error.value,
         data: profile.value,
         plot_base64: '',
       } as ResponseHelper<Profile>

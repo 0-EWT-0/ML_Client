@@ -1,7 +1,7 @@
 // services/treeService.ts
 import axios from 'axios'
 
-const baseURL = import.meta.env.VITE_URL_API || 'https://flaskapi-ml.onrender.com'
+const baseURL = import.meta.env.VITE_URL_API
 
 export async function fetchStudentSleepsEnough() {
   const data = await axios.get(`${baseURL}/predict/student_sleeps_enough`)

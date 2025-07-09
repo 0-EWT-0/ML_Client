@@ -3,7 +3,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
 import type { ResponseHelper } from '@/types/ResponseHelper'
 import type { RequestOptions } from '@/types/RequestOptions'
 
-const baseURL = import.meta.env.VITE_URL_API || 'https://flaskapi-ml.onrender.com'
+const baseURL = import.meta.env.VITE_URL_API
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL,

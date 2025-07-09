@@ -30,7 +30,7 @@
           v-if="chartData"
           class="mt-12 max-w-lg mx-auto bg-gray-900/50 rounded-2xl border border-gray-800/50 p-6"
         >
-          <Bar :data="chartData" :options="chartOptions" class="w-full h-80" />
+          <Bar :data="chartData" class="w-full h-80" />
         </div>
         <div v-if="imageError" class="text-red-500 mt-4 font-semibold">{{ imageError }}</div>
 
@@ -76,9 +76,9 @@ const imageError = ref<string | null>(null)
 
 // Chart data and options
 const chartData = computed(() => {
-  const profileData = localStorage.getItem('profileData')
-  if (!profileData) return null
-  const profile = JSON.parse(profileData) as Profile
+  const predictionsData = localStorage.getItem('predictionsData')
+  if (!predictionsData) return null
+  const profile = JSON.parse(predictionsData)
   const { addicted_score, affects_academic_performance, mental_health_score } = profile
   return {
     labels: ['Addicted Score', 'Affects Academic', 'Mental Health Score'],

@@ -41,7 +41,7 @@ const router = createRouter({
     {
       path: '/mental_health_by_usage_boxplot',
       name: 'Salud mental según nivel de uso de redes sociales',
-      component: () => import('@/views/MentalHealthByUsageBoxplot.vue'),
+      component: () => import('@/views/MentalHealthByUsageBoxPlot.vue'),
     },
     {
       path: '/daily_hours_addicted_age_relation',

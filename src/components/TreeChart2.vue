@@ -23,9 +23,22 @@
           <tr
             v-for="row in groupedByHour"
             :key="row.label"
-            class="hover:bg-purple-700/30 transition-colors"
+            :class="[
+              'transition-colors',
+              row.label === userHourBucket
+                ? 'bg-yellow-900/20 border-yellow-400'
+                : 'hover:bg-purple-700/30',
+            ]"
           >
-            <td class="border px-4 py-2 font-medium">{{ row.label }}</td>
+            <td
+              class="border px-4 py-2 font-medium"
+              :class="{ 'text-yellow-300': row.label === userHourBucket }"
+            >
+              {{ row.label }}
+              <span v-if="row.label === userHourBucket" class="ml-2 text-yellow-400 italic"
+                >(tú)</span
+              >
+            </td>
             <td class="border px-4 py-2">{{ row.total }}</td>
             <td class="border px-4 py-2 text-red-300">{{ row.impacto }}</td>
             <td class="border px-4 py-2">
@@ -46,6 +59,14 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useTreeStore } from '@/stores/TreesStore'
+
+const storedProfile = localStorage.getItem('profileData')
+const user = storedProfile ? JSON.parse(storedProfile) : null
+
+const userHourBucket = computed(() => {
+  if (!user || typeof user.avg_daily_usage_hours !== 'number') return null
+  return `${Math.floor(user.avg_daily_usage_hours)} h`
+})
 
 const treeStore = useTreeStore()
 const loaded = ref(false)

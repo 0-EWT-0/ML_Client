@@ -40,29 +40,29 @@
               class="bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span v-if="isSubmitting" class="flex items-center">
-              <svg
-                class="animate-spin h-5 w-5 mr-2 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                ></circle>
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              Enviando
-            </span>
-            <span v-else>Enviar</span>
+                <svg
+                  class="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Enviando
+              </span>
+              <span v-else>Enviar</span>
             </button>
           </div>
         </div>
@@ -94,11 +94,21 @@
               >
                 <img
                   :src="currentRangeOption.image"
-                  :alt="('label' in currentRangeOption && currentRangeOption.label !== undefined) ? currentRangeOption.label : (('name' in currentRangeOption && currentRangeOption.name) ? currentRangeOption.name : '')"
+                  :alt="
+                    'label' in currentRangeOption && currentRangeOption.label !== undefined
+                      ? currentRangeOption.label
+                      : 'name' in currentRangeOption && currentRangeOption.name
+                        ? currentRangeOption.name
+                        : ''
+                  "
                   class="w-full h-32 object-contain rounded-t-md mb-4"
                 />
                 <span class="text-sm font-medium text-center text-gray-300">{{
-                  'label' in currentRangeOption ? currentRangeOption.label : ('name' in currentRangeOption ? currentRangeOption.name : '')
+                  'label' in currentRangeOption
+                    ? currentRangeOption.label
+                    : 'name' in currentRangeOption
+                      ? currentRangeOption.name
+                      : ''
                 }}</span>
               </div>
             </div>
@@ -112,13 +122,20 @@
               :key="option.type === 'checkbox' ? option.name : option.label"
               class="relative group bg-gray-800/50 rounded-lg border transition-all duration-300 cursor-pointer pb-4"
               :class="{
-                'border-gray-700 grayscale-90': option.type === 'checkbox' && (questions[currentQuestionIndex].multiple
-                  ? !(Array.isArray(answers[currentQuestionIndex]) && (answers[currentQuestionIndex] as string[]).includes(option.name))
-                  : answers[currentQuestionIndex] !== option.name),
-                'border-purple-500 bg-purple-500/10 grayscale-0': option.type === 'checkbox' && (questions[currentQuestionIndex]
-                  .multiple
-                  ? (Array.isArray(answers[currentQuestionIndex]) && (answers[currentQuestionIndex] as string[]).includes(option.name))
-                  : answers[currentQuestionIndex] === option.name),
+                'border-gray-700 grayscale-90':
+                  option.type === 'checkbox' &&
+                  (questions[currentQuestionIndex].multiple
+                    ? !(
+                        Array.isArray(answers[currentQuestionIndex]) &&
+                        (answers[currentQuestionIndex] as string[]).includes(option.name)
+                      )
+                    : answers[currentQuestionIndex] !== option.name),
+                'border-purple-500 bg-purple-500/10 grayscale-0':
+                  option.type === 'checkbox' &&
+                  (questions[currentQuestionIndex].multiple
+                    ? Array.isArray(answers[currentQuestionIndex]) &&
+                      (answers[currentQuestionIndex] as string[]).includes(option.name)
+                    : answers[currentQuestionIndex] === option.name),
                 'hover:border-purple-500/50 hover:bg-purple-500/20 hover:scale-105 transition-transform duration-500': true,
               }"
             >
@@ -148,10 +165,7 @@
               </div>
             </label>
           </div>
-          <div
-            v-else-if="questions[currentQuestionIndex].type === 'country'"
-            class="mb-6 relative"
-          >
+          <div v-else-if="questions[currentQuestionIndex].type === 'country'" class="mb-6 relative">
             <input
               v-model="searchQuery"
               type="text"
@@ -197,6 +211,10 @@
             </div>
           </div>
         </div>
+        <p class="text-sm text-gray-400 mt-2">
+          El tiempo de respuesta del formulario puede durar mas de 50seg al enviar (se utliza la
+          capa gratuita de la nube | proyecto experimental)
+        </p>
       </div>
     </section>
   </div>
@@ -250,27 +268,27 @@ const { PostStoreProfile } = profileStore
 const router = useRouter()
 
 interface RangeOption {
-  type: 'range';
-  label: string;
-  image: string;
-  range: number[];
+  type: 'range'
+  label: string
+  image: string
+  range: number[]
 }
 
 interface NameOption {
-  type: 'checkbox';
-  name: string;
-  image: string;
+  type: 'checkbox'
+  name: string
+  image: string
 }
 
-type QuestionOption = RangeOption | NameOption;
+type QuestionOption = RangeOption | NameOption
 
 interface Question {
-  text: string;
-  type: 'range' | 'checkbox' | 'country';
-  multiple?: boolean;
-  min?: number;
-  max?: number;
-  options?: QuestionOption[];
+  text: string
+  type: 'range' | 'checkbox' | 'country'
+  multiple?: boolean
+  min?: number
+  max?: number
+  options?: QuestionOption[]
 }
 
 const questions = ref<Question[]>([
@@ -373,22 +391,22 @@ const questions = ref<Question[]>([
       { type: 'range', label: 'Muchos conflictos', image: conflicts3, range: [8, 10] },
     ],
   },
-] as const);
+] as const)
 
 const currentQuestionIndex = ref(0)
-type Answer = string | number | string[] | undefined;
-const answers = ref<Answer[]>(Array(9).fill(undefined));
+type Answer = string | number | string[] | undefined
+const answers = ref<Answer[]>(Array(9).fill(undefined))
 interface Country {
-  name: { common: string };
-  cca3: string;
-  flags: { png: string };
+  name: { common: string }
+  cca3: string
+  flags: { png: string }
 }
 const countries = ref<Country[]>([])
 const searchQuery = ref('')
 const showDropdown = ref(false)
 const error = ref('')
 const message = ref('')
-const isSubmitting = ref(false);
+const isSubmitting = ref(false)
 
 const filteredCountries = computed(() => {
   if (!searchQuery.value) return countries.value
@@ -402,16 +420,15 @@ const currentRangeOption = computed(() => {
     const value = answers.value[currentQuestionIndex.value] || 1
     const options = questions.value[currentQuestionIndex.value].options
     return (
-      options &&
-      options.find(
-        (option) =>
-          option.type === 'range' &&
-          typeof value === 'number' &&
-          value >= option.range[0] &&
-          value <= option.range[1]
-      ) ||
-      (options && options[0]) ||
-      { label: '', image: '' }
+      (options &&
+        options.find(
+          (option) =>
+            option.type === 'range' &&
+            typeof value === 'number' &&
+            value >= option.range[0] &&
+            value <= option.range[1],
+        )) ||
+      (options && options[0]) || { label: '', image: '' }
     )
   }
   return { label: '', image: '' }
@@ -442,7 +459,7 @@ const fetchCountries = async () => {
     const data = await response.json()
     countries.value = data.sort(
       (a: { name: { common: string } }, b: { name: { common: string } }) =>
-        a.name.common.localeCompare(b.name.common)
+        a.name.common.localeCompare(b.name.common),
     )
   } catch (error) {
     console.error('Error fetching countries:', error)
@@ -489,80 +506,99 @@ const previousQuestion = () => {
 
 const submitAnswers = async () => {
   try {
-    isSubmitting.value = true;
+    isSubmitting.value = true
 
-    const genderValue = answers.value[1] as string | undefined;
-    const academicValue = answers.value[2] as string | undefined;
-    const relationshipValue = answers.value[7] as string | undefined;
-    const platformValue = answers.value[5];
+    const genderValue = answers.value[1] as string | undefined
+    const academicValue = answers.value[2] as string | undefined
+    const relationshipValue = answers.value[7] as string | undefined
+    const platformValue = answers.value[5]
 
-    const genderMap: Record<string, string> = { Masculino: 'male', Femenino: 'female' };
-    const academicMap: Record<string, string> = { Secundaria: 'highschool', Licenciatura: 'undergraduate', Graduado: 'graduate' };
-    const relationshipMap: Record<string, string> = { Soltero: 'single', 'En relación': 'in relationship', Complicado: 'complicated' };
+    const genderMap: Record<string, string> = { Masculino: 'male', Femenino: 'female' }
+    const academicMap: Record<string, string> = {
+      Secundaria: 'highschool',
+      Licenciatura: 'undergraduate',
+      Graduado: 'graduate',
+    }
+    const relationshipMap: Record<string, string> = {
+      Soltero: 'single',
+      'En relación': 'in relationship',
+      Complicado: 'complicated',
+    }
     const platformMap: Record<string, string> = {
-      Instagram: 'instagram', Tiktok: 'tiktok', Facebook: 'facebook', Youtube: 'youtube',
-      'X/Twitter': 'twitter', LinkedIn: 'linkedin', Snapchat: 'snapchat', Line: 'line',
-      KakaoTalk: 'kakaotalk', Vkontakte: 'vkontakte', WeChat: 'wechat', WhatsApp: 'whatsapp',
-    };
+      Instagram: 'instagram',
+      Tiktok: 'tiktok',
+      Facebook: 'facebook',
+      Youtube: 'youtube',
+      'X/Twitter': 'twitter',
+      LinkedIn: 'linkedin',
+      Snapchat: 'snapchat',
+      Line: 'line',
+      KakaoTalk: 'kakaotalk',
+      Vkontakte: 'vkontakte',
+      WeChat: 'wechat',
+      WhatsApp: 'whatsapp',
+    }
 
     const profile: Profile = {
       age: (answers.value[0] as number | undefined) ?? 0,
-      gender: genderValue ? genderMap[genderValue] ?? '' : '',
-      academic_level: academicValue ? academicMap[academicValue] ?? '' : '',
+      gender: genderValue ? (genderMap[genderValue] ?? '') : '',
+      academic_level: academicValue ? (academicMap[academicValue] ?? '') : '',
       country: (answers.value[3] as string | undefined) ?? '',
       avg_daily_usage_hours: (answers.value[4] as number | undefined) ?? 0,
       most_used_platform: Array.isArray(platformValue)
-        ? (platformValue as string[]).map((name) => platformMap[name] || name.toLowerCase()).join(', ')
+        ? (platformValue as string[])
+            .map((name) => platformMap[name] || name.toLowerCase())
+            .join(', ')
         : typeof platformValue === 'string' && platformValue
-          ? platformMap[platformValue] ?? platformValue.toLowerCase()
+          ? (platformMap[platformValue] ?? platformValue.toLowerCase())
           : '',
       sleep_hours_per_night: (answers.value[6] as number | undefined) ?? 0,
-      relationship_status: relationshipValue ? relationshipMap[relationshipValue] ?? '' : '',
+      relationship_status: relationshipValue ? (relationshipMap[relationshipValue] ?? '') : '',
       conflicts_over_social_media: (answers.value[8] as number | undefined) ?? 0,
-      isCompletedForm:true,
-    };
+      isCompletedForm: true,
+    }
 
-    console.log('Profile sent to PostStoreProfile:', profile);
-    const response = await PostStoreProfile(profile);
-    console.log('PostStoreProfile response:', response);
+    console.log('Profile sent to PostStoreProfile:', profile)
+    const response = await PostStoreProfile(profile)
+    console.log('PostStoreProfile response:', response)
 
     if (response && response.success) {
-      console.log('Success response received, redirecting to /success');
-      message.value = response.message || '¡Perfil enviado con éxito!';
-      error.value = '';
-      router.push('/success');
+      console.log('Success response received, redirecting to /success')
+      message.value = response.message || '¡Perfil enviado con éxito!'
+      error.value = ''
+      router.push('/success')
     } else {
-      console.log('Response not successful:', response?.message);
-      error.value = response?.message || 'Error al enviar el perfil';
-      message.value = '';
+      console.log('Response not successful:', response?.message)
+      error.value = response?.message || 'Error al enviar el perfil'
+      message.value = ''
     }
   } catch (err) {
-    console.error('Error in submitAnswers:', err);
-    error.value = 'Error inesperado al enviar el perfil';
-    message.value = '';
+    console.error('Error in submitAnswers:', err)
+    error.value = 'Error inesperado al enviar el perfil'
+    message.value = ''
   } finally {
-    isSubmitting.value = false;
+    isSubmitting.value = false
   }
-};
+}
 
 onMounted(() => {
-  fetchCountries();
+  fetchCountries()
   if (questions.value[currentQuestionIndex.value].type === 'country') {
-    searchQuery.value = (answers.value[currentQuestionIndex.value] as string) || '';
+    searchQuery.value = (answers.value[currentQuestionIndex.value] as string) || ''
   }
   // Initialize answers for checkbox questions
-  if (!answers.value[1]) answers.value[1] = questions.value[1].multiple ? [] : '';
-  if (!answers.value[2]) answers.value[2] = questions.value[2].multiple ? [] : '';
-  if (!answers.value[5]) answers.value[5] = questions.value[5].multiple ? [] : '';
-  if (!answers.value[7]) answers.value[7] = questions.value[7].multiple ? [] : '';
+  if (!answers.value[1]) answers.value[1] = questions.value[1].multiple ? [] : ''
+  if (!answers.value[2]) answers.value[2] = questions.value[2].multiple ? [] : ''
+  if (!answers.value[5]) answers.value[5] = questions.value[5].multiple ? [] : ''
+  if (!answers.value[7]) answers.value[7] = questions.value[7].multiple ? [] : ''
   // Initialize answers for range questions
-  if (!answers.value[0]) answers.value[0] = 1; // Age
-  if (!answers.value[4]) answers.value[4] = 1; // Avg_Daily_Usage_Hours
-  if (!answers.value[6]) answers.value[6] = 1; // Sleep_Hours_Per_Night
-  if (!answers.value[8]) answers.value[8] = 0; // Conflicts_Over_Social_Media
+  if (!answers.value[0]) answers.value[0] = 1 // Age
+  if (!answers.value[4]) answers.value[4] = 1 // Avg_Daily_Usage_Hours
+  if (!answers.value[6]) answers.value[6] = 1 // Sleep_Hours_Per_Night
+  if (!answers.value[8]) answers.value[8] = 0 // Conflicts_Over_Social_Media
   // Initialize answers for country question
-  if (!answers.value[3]) answers.value[3] = ''; // Country
-});
+  if (!answers.value[3]) answers.value[3] = '' // Country
+})
 </script>
 
 <style scoped>
