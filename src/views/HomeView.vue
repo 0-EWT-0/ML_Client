@@ -169,27 +169,27 @@ const products = ref([
     image: question3,
     route: '/social_media_addiction_conflicts',
   },
-  {
-    title: '¿Que tanto influye las horas de sueno en tu salud mental?',
-    description:
-      'Evalúa el impacto emocional de una relación conflictiva y cómo esta afecta a tu descanso nocturno.',
-    image: question4,
-    route: '/slepp_hours_affect_mental_health',
-  },
-  {
-    title: '¿Tu uso de redes sociales afecta tus horas de sueño?',
-    description:
-      'Analiza si el uso constante de plataformas digitales se asocia con un aumento de problemas personales.',
-    image: question5,
-    route: '/less_sleep_more_social_medias',
-  },
-  {
-    title: '¿Las redes sociales te aíslan?',
-    description:
-      'Evalúa si la intensidad de tu uso digital puede predecir o afectar tu bienestar psicológico.',
-    image: question6,
-    route: '/social_media_mental_health',
-  },
+  // {
+  //   title: '¿Que tanto influye las horas de sueno en tu salud mental?',
+  //   description:
+  //     'Evalúa el impacto emocional de una relación conflictiva y cómo esta afecta a tu descanso nocturno.',
+  //   image: question4,
+  //   route: '/slepp_hours_affect_mental_health',
+  // },
+  // {
+  //   title: '¿Tu uso de redes sociales afecta tus horas de sueño?',
+  //   description:
+  //     'Analiza si el uso constante de plataformas digitales se asocia con un aumento de problemas personales.',
+  //   image: question5,
+  //   route: '/less_sleep_more_social_medias',
+  // },
+  // {
+  //   title: '¿Las redes sociales te aíslan?',
+  //   description:
+  //     'Evalúa si la intensidad de tu uso digital puede predecir o afectar tu bienestar psicológico.',
+  //   image: question6,
+  //   route: '/social_media_mental_health',
+  // },
   {
     title: '¿Estar en una relacion afecta el rendimiento academico?',
     description:
@@ -197,13 +197,13 @@ const products = ref([
     image: question7,
     route: '/relations_affect_academy_preformance',
   },
-  {
-    title: '¿Estar en un estado de relacion complicado pasas menos horas de sueño?',
-    description:
-      'Explora si el tener una relación sentimental afecta negativamente tu desempeño académico.',
-    image: question8,
-    route: '/less_sleep_in_complicated_relationships',
-  },
+  // {
+  //   title: '¿Estar en un estado de relacion complicado pasas menos horas de sueño?',
+  //   description:
+  //     'Explora si el tener una relación sentimental afecta negativamente tu desempeño académico.',
+  //   image: question8,
+  //   route: '/less_sleep_in_complicated_relationships',
+  // },
   {
     title: '¿Tu uso en redes sociales afecta tu rendimiento académico?',
     description:
@@ -215,7 +215,7 @@ const products = ref([
     title: '¿Duermes lo suficiente según tu tiempo en redes sociales?',
     description:
       'Descubre si la cantidad de horas que pasas en redes podría estar afectando la calidad de tu descanso nocturno.',
-    image: question10,
+    image: question5,
     route: '/student_sleeps_enough',
   },
   {},
