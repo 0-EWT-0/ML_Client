@@ -1,4 +1,3 @@
-<!-- src/components/PredictionChart.vue -->
 <template>
   <Bar :data="chartData" :options="chartOptions" class="w-full" />
 </template>
@@ -23,14 +22,24 @@ const props = defineProps<{
   mentalHealth: number
 }>()
 
+// Obtener datos del usuario desde el localStorage
+const storedProfile = localStorage.getItem('profileData')
+const userData = storedProfile ? JSON.parse(storedProfile) : {}
+
 const chartData = {
   labels: ['Adicción', 'Salud Mental'],
   datasets: [
     {
-      label: 'Predicciones del Usuario',
-      backgroundColor: '#a78bfa',
+      label: 'Predicción del Modelo',
+      backgroundColor: '#a78bfa', // Morado claro
       borderRadius: 8,
       data: [props.addicted, props.mentalHealth],
+    },
+    {
+      label: 'Datos del Usuario',
+      backgroundColor: '#f59e0b', // Amarillo
+      borderRadius: 8,
+      data: [userData?.addicted_score ?? 0, userData?.mental_health_score ?? 0],
     },
   ],
 }
@@ -39,7 +48,12 @@ const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
-    legend: { display: false },
+    legend: {
+      display: true,
+      labels: {
+        color: '#e5e5e5',
+      },
+    },
   },
   scales: {
     y: {

@@ -47,9 +47,22 @@ import { onMounted, ref } from 'vue'
 import { usePredictionStore } from '@/stores/QuestionsStore'
 import Profile from '@/components/Profile.vue'
 
+const storedProfile = localStorage.getItem('profileData')
+const user = storedProfile ? JSON.parse(storedProfile) : null
+
+const userMentalScore = user?.mental_health_score || null
+
 const predictionStore = usePredictionStore()
 const chartSeries = ref<any[]>([])
 const chartOptions = ref({})
+
+const userCategoria = (() => {
+  if (!user || typeof user.avg_daily_usage_hours !== 'number') return null
+  const hrs = user.avg_daily_usage_hours
+  if (hrs < 2) return 'Bajo'
+  if (hrs < 5) return 'Moderado'
+  return 'Alto'
+})()
 
 function processBoxplotData(dataPoints: { Categoria_Uso: string; mental_health_score: number }[]) {
   const grouped: Record<string, number[]> = {}
@@ -110,6 +123,32 @@ function processBoxplotData(dataPoints: { Categoria_Uso: string; mental_health_s
       intersect: false,
       theme: 'dark',
     },
+    annotations:
+      userCategoria && userMentalScore
+        ? {
+            points: [
+              {
+                x: userCategoria,
+                y: userMentalScore,
+                marker: {
+                  size: 8,
+                  fillColor: '#FACC15',
+                  strokeColor: '#FDE68A',
+                  radius: 2,
+                },
+                label: {
+                  borderColor: '#FACC15',
+                  offsetY: 0,
+                  style: {
+                    color: '#1F2937',
+                    background: '#FACC15',
+                  },
+                  text: 'Tú',
+                },
+              },
+            ],
+          }
+        : {},
   }
 }
 
