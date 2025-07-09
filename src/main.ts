@@ -12,9 +12,6 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-<<<<<<< HEAD
 app.component('apexchart', VueApexCharts)
 
-=======
->>>>>>> cardtwo
 app.mount('#app')

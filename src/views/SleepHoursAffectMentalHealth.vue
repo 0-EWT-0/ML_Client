@@ -1,82 +1,132 @@
 <template>
-  <div>
-    <h1>Sleep Hours Affect Mental Health</h1>
+  <div class="min-h-screen bg-gray-950 text-white font-sans">
+    <Header />
 
-    <!-- Resultado en texto -->
-    <div>
-      <p v-if="predictionResult" class="text-lg">
-        {{ predictionResult }}
-        <span v-if="predictionStore.error" class="text-red-500">{{ predictionStore.error }}</span>
-      </p>
-      <p v-else class="text-gray-500">Cargando predicción o sin datos disponibles...</p>
-    </div>
+    <section class="container mx-auto px-6 pt-24 pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- Gráfica simple con predicción -->
+        <div class="relative rounded-2xl overflow-hidden border border-gray-800/50">
+          <div class="w-full h-[500px] bg-gray-900 flex items-center justify-center">
+            <Bar v-if="showGraph" :data="chartData" :options="chartOptions"
+              :style="{ height: '100%', width: '100%' }" />
+            <p v-else class="text-gray-400">No se generó una gráfica aún.</p>
+          </div>
+        </div>
 
-    <!-- Gráfica -->
-    <div class="mt-4">
-      <img
-        v-if="predictionStore.prediction?.plot_base64"
-        :src="`data:image/png;base64,${predictionStore.prediction.plot_base64}`"
-        alt="Sleep Hours Affect Mental Health Plot"
-        class="max-w-full h-auto"
-        @error="handleImageError"
-      />
-      <p v-else-if="imageError" class="text-red-500">{{ imageError }}</p>
-      <p v-else class="text-gray-500">No se generó una gráfica aún.</p>
-    </div>
+        <!-- Información -->
+        <div class="space-y-6">
+          <h1 class="text-4xl md:text-5xl font-extrabold text-purple-500 tracking-tight">
+            ¿Cómo afectan tus horas de sueño a tu salud mental?
+          </h1>
+          <p class="text-base text-gray-400 leading-relaxed">
+            Analizamos la correlación entre las horas de sueño promedio por noche y el nivel de salud mental percibida.
+            El gráfico muestra tu resultado individual según el modelo de predicción.
+          </p>
 
-    <!-- Botón para generar predicción -->
-    <button @click="fetchMentalHealth" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
-      Generar Predicción
-    </button>
+          <div>
+            <p v-if="predictionResult" class="text-sm text-purple-400 font-semibold">
+              {{ predictionResult }}
+            </p>
+            <p v-if="predictionStore.error" class="text-red-500 text-sm">{{ predictionStore.error }}</p>
+          </div>
+
+          <!-- Gauge visual -->
+          <div v-if="predictionStore.prediction?.mental_health_score" class="mt-6">
+            <Gauge :score="Number(predictionStore.prediction.mental_health_score)" />
+          </div>
+
+          <button @click="fetchMentalHealth"
+            class="bg-purple-500 hover:bg-purple-600 text-white font-semibold text-sm uppercase tracking-wide py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/30">
+            Generar Predicción
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <Footer />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import { usePredictionStore } from '@/stores/QuestionsStore';
+import { ref, onMounted, watch } from 'vue'
+import { usePredictionStore } from '@/stores/QuestionsStore'
+import { Bar } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+} from 'chart.js'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
+import Gauge from '@/components/Gauge.vue'
 
-const predictionStore = usePredictionStore();
-const predictionResult = ref<string | null>(null);
-const imageError = ref<string | null>(null);
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+
+const predictionStore = usePredictionStore()
+const predictionResult = ref<string | null>(null)
+const showGraph = ref(false)
+
+const chartData = ref({
+  labels: ['Tu Resultado'],
+  datasets: [
+    {
+      label: 'Salud Mental',
+      backgroundColor: '#8B5CF6',
+      data: []
+    }
+  ]
+})
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: true, position: 'top' },
+    title: { display: true, text: 'Horas de Sueño vs Salud Mental (Resultado Individual)' }
+  },
+  scales: {
+    x: {
+      title: { display: true, text: 'Horas de sueño' }
+    },
+    y: {
+      title: { display: true, text: 'Puntaje de salud mental' },
+      beginAtZero: true,
+      max: 100
+    }
+  }
+}
 
 onMounted(() => {
-  const storedProfile = localStorage.getItem('profileData');
-  const storedPrediction = localStorage.getItem('predictionData');
-  if (storedProfile || storedPrediction) {
-    updatePredictionResult();
+  const storedPrediction = localStorage.getItem('predictionData')
+  if (storedPrediction) {
+    const parsed = JSON.parse(storedPrediction)
+    predictionStore.prediction = parsed
+    updateGraph(parsed)
   }
-});
+})
 
 watch(() => predictionStore.prediction, (newPrediction) => {
-  updatePredictionResult();
-});
+  if (newPrediction) updateGraph(newPrediction)
+})
 
-const updatePredictionResult = () => {
-  if (predictionStore.prediction) {
-    predictionResult.value = `Sleep Hours: ${predictionStore.prediction.sleep_hours || 'N/A'}, Mental Health Score: ${predictionStore.prediction.mental_health_score || 'N/A'}, Predicción: ${predictionStore.prediction.prediction || 'N/A'}`;
-    imageError.value = null;
-  } else {
-    predictionResult.value = null;
-  }
-};
+function updateGraph(prediction: any) {
+  predictionResult.value = `Dormiste ${prediction.sleep_hours || 'N/A'} horas. Salud mental estimada: ${prediction.mental_health_score || 'N/A'}.`
+  chartData.value.datasets[0].data = (prediction.mental_health_score)
+  showGraph.value = true
+}
 
 const fetchMentalHealth = async () => {
   try {
-    await predictionStore.postSleepHoursAffectMentalHealth();
-    if (predictionStore.error) {
-      throw new Error(predictionStore.error);
-    }
-    updatePredictionResult();
+    await predictionStore.postSleepHoursAffectMentalHealth()
+    if (predictionStore.error) throw new Error(predictionStore.error)
+    updateGraph(predictionStore.prediction)
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-    predictionResult.value = `Error al obtener la predicción: ${errorMessage}`;
-    imageError.value = errorMessage;
-    console.error('Error en fetchMentalHealth:', error);
+    predictionResult.value = `Error: ${error instanceof Error ? error.message : 'desconocido'}`
+    showGraph.value = false
   }
-};
-
-const handleImageError = () => {
-  imageError.value = 'Error al cargar la imagen (base64 inválido o corrupto)';
-  console.error('Error al renderizar la imagen. plot_base64:', predictionStore.prediction?.plot_base64);
-};
+}
 </script>
