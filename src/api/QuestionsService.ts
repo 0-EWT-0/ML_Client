@@ -23,7 +23,7 @@ export async function postSocial_media_addiction_conflicts(prediction: Predictio
     url: `${urlBase}/social_media_addiction_conflicts`,
     method: 'POST',
     data: {
-      addicted_score: prediction.addicted_score
+      addicted_score: prediction.addicted_score,
     },
   })
 }
@@ -66,7 +66,7 @@ export async function postLess_sleep_in_complicated_relationships(prediction: Pr
     url: `${urlBase}/less_sleep_relation`,
     method: 'POST',
     data: {
-        sleep_hours: prediction.sleep_hours,
+      sleep_hours: prediction.sleep_hours,
     },
   })
 }
@@ -77,4 +77,3 @@ export async function getSocial_media_impact_academics() {
     method: 'GET',
   })
 }
-

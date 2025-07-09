@@ -8,7 +8,9 @@ export interface PredictionResponse {
   coefficient_conflicts: number
   prediction_mental_health: number
   prediction: number
+  prediction_conflicts: number
   sleep_hours: number
   media_hours: number
   is_in_relationship?: string
+  data_points?: []
 }

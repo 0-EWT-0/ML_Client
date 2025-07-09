@@ -9,7 +9,7 @@
         <!-- Gráfica -->
         <div class="relative rounded-2xl overflow-hidden border border-gray-800/50">
           <div class="w-full h-[500px] bg-gray-900 flex items-center justify-center">
-            <Bar v-if="showGraph" :data="chartData" :options="chartOptions" :style="{ height: '100%', width: '100%' }" />
+            <Bar v-if="showGraph" :data="chartData" :style="{ height: '100%', width: '100%' }" />
             <p v-else class="text-gray-400 text-center">Cargando gráfica...</p>
           </div>
         </div>

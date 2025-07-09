@@ -66,6 +66,17 @@
           Personaliza tus predicciones y descubre cómo tus hábitos digitales influyen en lo que más
           importa.
         </p>
+        <p
+          @click="goToForm()"
+          action
+          class="text-lg md:text-xl text-purple-400 mb-16 max-w-3xl mx-auto leading-relaxed text-center underline cursor-pointer"
+        >
+          Volver a contestar el formulario
+        </p>
+        <p class="text-sm text-gray-400 mb-2">
+          El tiempo de respuesta de las predicciones puede tardar 50 segundos o mas (se utliza la
+          capa gratuita de la nube | proyecto experimental)
+        </p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
           <div
             v-for="(product, index) in products"
@@ -126,6 +137,10 @@ onMounted(() => {
   if (storedProfile) profile.value = JSON.parse(storedProfile)
   if (storedPredictions) predictions.value = JSON.parse(storedPredictions)
 })
+
+const goToForm = () => {
+  router.push('/form')
+}
 
 const scrollToProfile = (id: string) => {
   const section = document.getElementById(id)
