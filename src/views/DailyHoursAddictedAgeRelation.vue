@@ -8,10 +8,15 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <!-- Gráfica -->
         <div class="relative rounded-2xl overflow-hidden border border-gray-800/50">
-          <div class="w-full h-[500px] bg-gray-900 flex items-center justify-center">
-            <Bar v-if="showGraph" :data="chartData" :style="{ height: '100%', width: '100%' }" />
+          <!-- <div class="w-full h-[500px] bg-gray-900 flex items-center justify-center">
+            <Bar
+              v-if="showGraph"
+              :data="chartDataComputed"
+              :options="chartOptions"
+              :style="{ height: '100%', width: '100%' }"
+            />
             <p v-else class="text-gray-400 text-center">Cargando gráfica...</p>
-          </div>
+          </div> -->
         </div>
         <!-- Product Info -->
         <div class="space-y-6">
@@ -58,13 +63,13 @@
         <li class="flex items-start space-x-4">
           <span class="text-purple-600">•</span>
           <p class="text-sm text-gray-400 leading-relaxed">
-            ¿Por qué esta gráfica tiene sentido? Esta visualización agrupa las horas diarias de uso
-            de redes sociales por rangos de edad y categorías de adicción (grupos 0, 1 y 2),
-            reflejando cómo la dependencia digital, los hábitos de interacción y la obsesión por las
-            plataformas varían según la etapa de vida. Al analizar estos patrones, puedes
-            identificar tendencias en tu nivel de engagement, rutina online y su impacto en tu
-            rendimiento académico o estilo de vida, ofreciendo insights valiosos para ajustar tu
-            presencia digital.
+            Tu perfil: Edad {{ age }} años, {{ avgDailyUsageHours }} horas diarias, Adicción
+            {{ addictedScore }}. ¡Aquí estás tú, estás en el grupo
+            {{ userGroup.replace('Grupo ', '') }}! ¿Por qué esta gráfica tiene sentido? Esta
+            visualización agrupa las horas diarias de uso de redes sociales por rangos de edad y
+            categorías de adicción (grupos 0, 1 y 2), reflejando cómo la dependencia digital varía
+            según la etapa de vida. Al analizar estos patrones, puedes identificar tendencias en tu
+            rutina online y su impacto en tu vida.
           </p>
         </li>
       </ul>
@@ -87,51 +92,57 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
+  PointElement,
+  LineElement,
 } from 'chart.js'
 import Header from '@/components/Header.vue' // Ajusta la ruta según tu proyecto
 import Footer from '@/components/Footer.vue' // Ajusta la ruta según tu proyecto
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+)
 
 const predictionStore = usePredictionStore()
 const predictionResult = ref<string | null>(null)
 const resultSection = ref<HTMLElement | null>(null)
 const isLoading = ref(false)
 const showGraph = ref(false)
+const chartDataComputed = computed(() => chartData.value)
 
-const academicLevel = ref<string>(localStorage.getItem('academic_level') || 'highschool')
-const addictedScore = ref<number>(
-  localStorage.getItem('addicted_score')
-    ? parseFloat(localStorage.getItem('addicted_score')!)
-    : 10.74,
-)
-const affectsAcademicPerformance = ref<number>(
-  localStorage.getItem('affects_academic_performance')
-    ? parseInt(localStorage.getItem('affects_academic_performance')!)
-    : 1,
-)
-const age = ref<number>(localStorage.getItem('age') ? parseInt(localStorage.getItem('age')!) : 17)
-const avgDailyUsageHours = ref<number>(
-  localStorage.getItem('avg_daily_usage_hours')
-    ? parseFloat(localStorage.getItem('avg_daily_usage_hours')!)
-    : 11,
-)
-const sleepHours = ref<number>(
-  localStorage.getItem('sleep_hours_per_night')
-    ? parseFloat(localStorage.getItem('sleep_hours_per_night')!)
-    : 13,
-)
+// Cargar datos desde profileData en localStorage
+const profileData = ref(JSON.parse(localStorage.getItem('profileData') || '{}'))
+const age = ref<number>(profileData.value.age || 25) // Ajustado a 25 para 21-30 según imagen
+const addictedScore = ref<number>(profileData.value.addictedScore || 10.74)
+const avgDailyUsageHours = ref<number>(profileData.value.avgDailyUsageHours || 11)
+const userGroup = ref<string>('Desconocido')
+
 const academicImpact = computed(() =>
-  affectsAcademicPerformance.value === 1 ? 'afectado' : 'no afectado',
+  profileData.value.affectsAcademicPerformance === 1 ? 'afectado' : 'no afectado',
 )
 
 // Inicializar chartData con valores por defecto
 const chartData = ref({
   labels: [] as string[],
   datasets: [
-    { label: 'Grupo 0', backgroundColor: '#4CAF50', data: [] as number[] },
-    { label: 'Grupo 1', backgroundColor: '#FF9800', data: [] as number[] },
-    { label: 'Grupo 2', backgroundColor: '#F44336', data: [] as number[] },
+    { label: 'Grupo 0 (Bajo riesgo)', backgroundColor: '#4CAF50', data: [] as number[] },
+    { label: 'Grupo 1 (Riesgo moderado)', backgroundColor: '#FF9800', data: [] as number[] },
+    { label: 'Grupo 2 (Alto riesgo)', backgroundColor: '#F44336', data: [] as number[] },
+    {
+      label: 'Aquí estás tú (Grupo ' + userGroup.value.replace('Grupo ', '') + ')',
+      data: [] as number[],
+      type: 'scatter' as const,
+      pointRadius: 10,
+      pointBackgroundColor: 'yellow',
+      pointBorderColor: 'black',
+      pointBorderWidth: 3,
+    },
   ],
 })
 
@@ -162,6 +173,8 @@ watch(
       isLoading.value = false
       showGraph.value = true
       updateChartData(newPrediction.data_points)
+      determineUserGroup()
+      updateChartDataLabels() // Actualizar la etiqueta del punto después de determinar el grupo
       updatePredictionResult()
     } else {
       showGraph.value = false
@@ -177,6 +190,38 @@ const updatePredictionResult = () => {
   }
 }
 
+const determineUserGroup = () => {
+  const userAgeRange = getAgeRange(age.value)
+  const userDataPoint = {
+    age: age.value,
+    addictedScore: addictedScore.value,
+    avgDailyUsageHours: avgDailyUsageHours.value,
+  }
+
+  // Lógica clara y ajustada para coincidir con la imagen
+  if (addictedScore.value <= 5 && avgDailyUsageHours.value <= 6) {
+    userGroup.value = 'Grupo 0' // Bajo riesgo
+  } else if (
+    addictedScore.value > 5 &&
+    addictedScore.value <= 10 &&
+    avgDailyUsageHours.value <= 12
+  ) {
+    userGroup.value = 'Grupo 1' // Riesgo moderado (ajustado para 10.74 y 11)
+  } else {
+    userGroup.value = 'Grupo 2' // Alto riesgo
+  }
+}
+
+const getAgeRange = (age: number) => {
+  if (age >= 0 && age <= 10) return '0-10'
+  if (age >= 11 && age <= 20) return '11-20'
+  if (age >= 21 && age <= 30) return '21-30'
+  if (age >= 31 && age <= 40) return '31-40'
+  if (age >= 41 && age <= 50) return '41-50'
+  if (age >= 51 && age <= 60) return '51-60'
+  return '61+'
+}
+
 const updateChartData = (dataPoints: any[]) => {
   if (dataPoints && dataPoints.length > 0) {
     const ageRanges = {} as { [key: string]: { [key: number]: number[]; count: number[] } }
@@ -185,14 +230,7 @@ const updateChartData = (dataPoints: any[]) => {
       const group = dp.grupo
       const hours = dp.avg_daily_usage_hours
 
-      let range = '0-10'
-      if (age >= 11 && age <= 20) range = '11-20'
-      else if (age >= 21 && age <= 30) range = '21-30'
-      else if (age >= 31 && age <= 40) range = '31-40'
-      else if (age >= 41 && age <= 50) range = '41-50'
-      else if (age >= 51 && age <= 60) range = '51-60'
-      else if (age >= 61) range = '61+'
-
+      let range = getAgeRange(age)
       if (!ageRanges[range]) {
         ageRanges[range] = { 0: [], 1: [], 2: [], count: [0, 0, 0] }
       }
@@ -215,16 +253,40 @@ const updateChartData = (dataPoints: any[]) => {
       (range) =>
         ageRanges[range][2].reduce((sum, h) => sum + h, 0) / (ageRanges[range].count[2] || 1),
     )
+
+    // Añadir el punto del usuario
+    const userAgeRange = getAgeRange(age.value)
+    const userIndex = labels.indexOf(userAgeRange)
+    if (userIndex !== -1) {
+      chartData.value.datasets[3].data = [0, 0, 0, 0] // Inicializar con 0 para otros rangos
+      chartData.value.datasets[3].data[userIndex] = avgDailyUsageHours.value
+    } else {
+      chartData.value.datasets[3].data = []
+    }
   } else {
     chartData.value = {
       labels: ['Sin datos'],
       datasets: [
-        { label: 'Grupo 0', backgroundColor: '#4CAF50', data: [0] },
-        { label: 'Grupo 1', backgroundColor: '#FF9800', data: [0] },
-        { label: 'Grupo 2', backgroundColor: '#F44336', data: [0] },
+        { label: 'Grupo 0 (Bajo riesgo)', backgroundColor: '#4CAF50', data: [0] },
+        { label: 'Grupo 1 (Riesgo moderado)', backgroundColor: '#FF9800', data: [0] },
+        { label: 'Grupo 2 (Alto riesgo)', backgroundColor: '#F44336', data: [0] },
+        {
+          label: 'Aquí estás tú (Grupo ' + userGroup.value.replace('Grupo ', '') + ')',
+          data: [0],
+          type: 'scatter',
+          pointRadius: 10,
+          pointBackgroundColor: 'yellow',
+          pointBorderColor: 'black',
+          pointBorderWidth: 3,
+        },
       ],
     }
   }
+}
+
+const updateChartDataLabels = () => {
+  chartData.value.datasets[3].label =
+    'Aquí estás tú (Grupo ' + userGroup.value.replace('Grupo ', '') + ')'
 }
 
 const fetchRelation = async () => {
@@ -238,7 +300,6 @@ const fetchRelation = async () => {
     updatePredictionResult()
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-    predictionResult.value = `Error al obtener la relación: ${errorMessage}`
     console.error('Error en fetchRelation:', error)
   } finally {
     isLoading.value = false

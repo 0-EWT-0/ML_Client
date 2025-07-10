@@ -11,15 +11,24 @@
       <span class="text-green-300 font-semibold">duerman lo suficiente</span>.
     </p>
 
-    <div class="min-h-[300px] flex items-center justify-center">
-      <div v-if="loadSwitch" class="text-purple-300 animate-pulse text-center">
+    <div class="w-full min-h-[400px]">
+      <div
+        v-if="loadSwitch"
+        class="flex flex-col items-center justify-center h-[400px] text-purple-300 animate-pulse"
+      >
         <div
-          class="w-8 h-8 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"
+          class="w-8 h-8 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mb-3"
         ></div>
         Cargando datos...
       </div>
-
-      <apexchart v-else type="bar" height="400" :options="chartOptions" :series="chartSeries" />
+      <apexchart
+        v-else
+        type="bar"
+        height="400"
+        width="100%"
+        :options="chartOptions"
+        :series="chartSeries"
+      />
     </div>
 
     <div class="mt-6 text-center">
@@ -46,6 +55,11 @@ const chartSeries = ref<any[]>([])
 const chartOptions = ref({})
 const loadSwitch = ref(true)
 
+// Obtener datos del usuario
+const storedProfile = localStorage.getItem('profileData')
+const user = storedProfile ? JSON.parse(storedProfile) : null
+const userHoraKey = user ? `${Math.floor(user.avg_daily_usage_hours)} h` : null
+
 function processData() {
   const data = treeStore.studentSleep.data_points
   const buckets: Record<string, { total: number; duermeBien: number }> = {}
@@ -69,6 +83,10 @@ function processData() {
     const { total, duermeBien } = buckets[key]
     return total > 0 ? Number(((duermeBien / total) * 100).toFixed(1)) : 0
   })
+
+  // Obtener índice del usuario
+  const userIndex = categories.findIndex((c) => c === userHoraKey)
+  const userPercentage = userIndex !== -1 ? seriesData[userIndex] : null
 
   chartSeries.value = [
     {
@@ -97,6 +115,32 @@ function processData() {
     tooltip: {
       theme: 'dark',
     },
+    annotations:
+      userPercentage !== null
+        ? {
+            points: [
+              {
+                x: userHoraKey,
+                y: userPercentage,
+                marker: {
+                  size: 8,
+                  fillColor: '#FACC15',
+                  strokeColor: '#FDE68A',
+                  radius: 2,
+                },
+                label: {
+                  borderColor: '#FACC15',
+                  offsetY: -10,
+                  style: {
+                    color: '#1F2937',
+                    background: '#FACC15',
+                  },
+                  text: 'Tú',
+                },
+              },
+            ],
+          }
+        : {},
   }
 
   loadSwitch.value = false

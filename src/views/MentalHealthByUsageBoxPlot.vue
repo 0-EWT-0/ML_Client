@@ -12,7 +12,9 @@
     </p>
 
     <ul class="text-sm text-gray-300 mt-4 list-disc list-inside max-w-2xl mx-auto">
-      <li><span class="text-green-300 font-medium">Verde (parte superior):</span> mejores puntajes.</li>
+      <li>
+        <span class="text-green-300 font-medium">Verde (parte superior):</span> mejores puntajes.
+      </li>
       <li><span class="text-red-400 font-medium">Rojo (parte inferior):</span> peores puntajes.</li>
     </ul>
 
@@ -20,15 +22,10 @@
       Tu puntaje aparecerá como un punto amarillo para comparar con los demás.
     </p>
 
-    <apexchart type="boxPlot" height="400" :options="chartOptions" :series="combinedSeries" />
-
-    <div class="mt-6 text-center">
-      <button @click="fetchBoxplot" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded text-white">
-        Volver a cargar datos
-      </button>
-    </div>
-
-    <div v-if="userCategoria" class="mt-10 bg-gray-800/50 p-4 rounded-xl border border-purple-600/30 max-w-2xl mx-auto">
+    <div
+      v-if="userCategoria"
+      class="mt-10 bg-gray-800/50 p-4 rounded-xl border border-purple-600/30 max-w-2xl mx-auto"
+    >
       <h3 class="text-xl font-semibold text-purple-400 mb-2 text-center">
         Tu Categoría de Uso: <span class="text-white">{{ userCategoria }}</span>
       </h3>
@@ -36,6 +33,17 @@
         {{ recomendaciones[userCategoria] }}
       </p>
     </div>
+
+    <div class="mt-6 text-center">
+      <button
+        @click="fetchBoxplot"
+        class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded text-white"
+      >
+        Volver a cargar datos
+      </button>
+    </div>
+
+    <apexchart type="boxPlot" height="400" :options="chartOptions" :series="combinedSeries" />
   </div>
 </template>
 
@@ -56,7 +64,8 @@ const chartOptions = ref({})
 
 const recomendaciones: Record<string, string> = {
   Bajo: 'Tu nivel de uso es bajo. ¡Sigue así! Estás cuidando bien tu salud mental y tu equilibrio digital.',
-  Moderado: 'Tu uso de redes sociales es moderado. Intenta establecer horarios y tomar descansos frecuentes para mantener el control.',
+  Moderado:
+    'Tu uso de redes sociales es moderado. Intenta establecer horarios y tomar descansos frecuentes para mantener el control.',
   Alto: 'Tu nivel de uso es alto. Considera reducir tu tiempo en redes sociales y buscar actividades que te aporten bienestar emocional.',
 }
 
